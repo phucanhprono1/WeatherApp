@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_translucent">
+    <ImageView
+        android:layout_width="@dimen/_16sdp"
+        android:layout_height="@dimen/_16sdp"
+        android:src="@drawable/ic_cloud"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:id="@+id/ivWeatherConditionRcv"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDayRcv"
+        android:text="Today"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_toEndOf="@id/ivWeatherConditionRcv"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvWeatherConditionRcv"
+        android:text="Cloudy"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_toEndOf="@id/tvDayRcv"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvMinMaxTempRcv"
+        android:text="30/20"
+        android:textSize="@dimen/_16sdp"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_alignParentRight="true"
+        />
+
+
+</RelativeLayout>
