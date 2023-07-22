@@ -30,9 +30,50 @@ class WeatherForecastAdapter(val fiveDaysForecast: FiveDaysForecast) : RecyclerV
 
     override fun onBindViewHolder(holder: WeatherForecastViewHolder, position: Int) {
         val forecast = fiveDaysForecast.DailyForecasts.get(position)
-        holder.iconWeather.setImageResource(R.drawable.ic_cloud)
-        holder.tvDay.text = forecast.Date
+        when(forecast.Day.Icon){
+            1-> holder.iconWeather.setImageResource(R.drawable.sunny_01)
+            2-> holder.iconWeather.setImageResource(R.drawable.mostly_sunny_02)
+            3-> holder.iconWeather.setImageResource(R.drawable.partly_sunny_03)
+            4-> holder.iconWeather.setImageResource(R.drawable.inter_cloud_04)
+            5-> holder.iconWeather.setImageResource(R.drawable.hazy_sunshine_05)
+            6-> holder.iconWeather.setImageResource(R.drawable.s_06)
+            7-> holder.iconWeather.setImageResource(R.drawable.s07)
+            8-> holder.iconWeather.setImageResource(R.drawable.ic_w08)
+            11-> holder.iconWeather.setImageResource(R.drawable.ic_w11)
+            12-> holder.iconWeather.setImageResource(R.drawable.ic_w12)
+            13-> holder.iconWeather.setImageResource(R.drawable.ic_w13)
+            14-> holder.iconWeather.setImageResource(R.drawable.ic_w14)
+            15-> holder.iconWeather.setImageResource(R.drawable.ic_w15)
+            16-> holder.iconWeather.setImageResource(R.drawable.ic_w16)
+            17-> holder.iconWeather.setImageResource(R.drawable.ic_w17)
+            18-> holder.iconWeather.setImageResource(R.drawable.ic_w18)
+            19-> holder.iconWeather.setImageResource(R.drawable.ic_w19)
+            20-> holder.iconWeather.setImageResource(R.drawable.ic_w20)
+            21-> holder.iconWeather.setImageResource(R.drawable.ic_w21)
+            22-> holder.iconWeather.setImageResource(R.drawable.ic_w22)
+            23-> holder.iconWeather.setImageResource(R.drawable.ic_w23)
+            24-> holder.iconWeather.setImageResource(R.drawable.ic_w24)
+            25-> holder.iconWeather.setImageResource(R.drawable.ic_w25)
+            26-> holder.iconWeather.setImageResource(R.drawable.ic_w26)
+            29-> holder.iconWeather.setImageResource(R.drawable.ic_w29)
+            30-> holder.iconWeather.setImageResource(R.drawable.ic_w30)
+            31-> holder.iconWeather.setImageResource(R.drawable.ic_w31)
+            32-> holder.iconWeather.setImageResource(R.drawable.ic_w32)
+            33-> holder.iconWeather.setImageResource(R.drawable.ic_w33)
+            34-> holder.iconWeather.setImageResource(R.drawable.ic_w34)
+            35-> holder.iconWeather.setImageResource(R.drawable.ic_w35)
+            36-> holder.iconWeather.setImageResource(R.drawable.ic_w36)
+            37-> holder.iconWeather.setImageResource(R.drawable.ic_w37)
+            38-> holder.iconWeather.setImageResource(R.drawable.ic_w38)
+            39-> holder.iconWeather.setImageResource(R.drawable.ic_w39)
+            41-> holder.iconWeather.setImageResource(R.drawable.ic_w41)
+            42-> holder.iconWeather.setImageResource(R.drawable.ic_w42)
+            43-> holder.iconWeather.setImageResource(R.drawable.ic_w43)
+            44-> holder.iconWeather.setImageResource(R.drawable.ic_w44)
+        }
+
+        holder.tvDay.text = "Today"
         holder.weatherCondition.text = forecast.Day.IconPhrase
-        holder.tvMinMaxTemp.text = forecast.Temperature.Minimum.Value.toString() + "°C" + "/" + forecast.Temperature.Maximum.Value.toString() + "°C"
+        holder.tvMinMaxTemp.text = forecast.Temperature.Minimum.Value.toString() + "°${forecast.Temperature.Maximum.Unit}" + "/" + forecast.Temperature.Maximum.Value.toString() + "°${forecast.Temperature.Minimum.Unit}"
     }
 }

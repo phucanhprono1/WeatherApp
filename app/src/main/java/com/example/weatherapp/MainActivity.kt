@@ -13,9 +13,11 @@ import android.preference.PreferenceManager
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import com.example.weatherapp.adapter.FragmentAdapter
 import com.example.weatherapp.api.ServiceFactory
+import com.example.weatherapp.config.StaticConfig
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.fragment.currentweather.CurrentWeatherFragment
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
@@ -137,6 +139,9 @@ class MainActivity : AppCompatActivity() {
             // Lưu Location Key vào SharedPreferences
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
             sharedPreferences.edit().putString("LOCATION_KEY", locationKey).apply()
+            sharedPreferences.edit().putString("TIME_ZONE", locationResponse.TimeZone.Code).apply()
+            StaticConfig.locationKey = locationKey
+            StaticConfig.tz_id = locationResponse.TimeZone.Code
 
             // Do something with the locationKey
         } else {
