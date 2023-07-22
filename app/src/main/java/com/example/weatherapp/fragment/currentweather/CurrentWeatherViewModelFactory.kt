@@ -1,6 +1,7 @@
 package com.example.weatherapp.fragment.currentweather
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,14 +11,15 @@ import javax.inject.Singleton
 
 @Singleton
 class CurrentWeatherViewModelFactory @Inject constructor(
-    private val context: Context,
+    private val applicationContext: Context, // Use the applicationContext instead of context
     private val lifecycleOwner: LifecycleOwner,
-    private val forecastRepository: ForecastRepository
+    private val forecastRepository: ForecastRepository,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CurrentWeatherViewModel::class.java)) {
-            return CurrentWeatherViewModel(context, lifecycleOwner,forecastRepository) as T
+            return CurrentWeatherViewModel(applicationContext, lifecycleOwner,forecastRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

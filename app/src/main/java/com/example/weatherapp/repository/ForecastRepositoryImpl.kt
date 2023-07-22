@@ -1,5 +1,6 @@
 package com.example.weatherapp.repository
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import com.example.weatherapp.entity.currentweather.UnitLocalizedCurrentWeather
 import com.example.weatherapp.networkdata.WeatherNetworkDataSource
@@ -11,10 +12,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.ZonedDateTime
 import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ForecastRepositoryImpl(
+@Singleton
+class ForecastRepositoryImpl @Inject constructor(
     private val currentWeatherDao: CurrentWeatherDao,
-    private val weatherNetworkDataSource: WeatherNetworkDataSource
+    private val weatherNetworkDataSource: WeatherNetworkDataSource,
+    private val sharedPreferences: SharedPreferences
 ):ForecastRepository {
     init {
         weatherNetworkDataSource.apply {
@@ -26,26 +31,27 @@ class ForecastRepositoryImpl(
     }
     private fun persistFetchedCurrentWeather(fetchedWeather: CurrentWeatherResponse){
         GlobalScope.launch (Dispatchers.IO){
-            currentWeatherDao.upsert(fetchedWeather.get(0))
+            currentWeatherDao.upsert(fetchedWeather[0])
         }
 
 
     }
-    override suspend fun getCurrentWeather(metric: Boolean,locationKey:String): LiveData<out UnitLocalizedCurrentWeather> {
+    override suspend fun getCurrentWeather(metric: Boolean): LiveData<out UnitLocalizedCurrentWeather> {
 
         return withContext(Dispatchers.IO){
-            initWeatherData(locationKey)
+            initWeatherData()
             return@withContext if (metric) currentWeatherDao.getWeatherMetric()
             else currentWeatherDao.getWeatherImperial()
         }
     }
-    private suspend fun initWeatherData(locationKey:String){
+    private suspend fun initWeatherData(){
         if(isFetchCurrentNeeded(ZonedDateTime.now())){
-            fetchCurrentWeather(locationKey)
+            fetchCurrentWeather()
         }
     }
-    private suspend fun fetchCurrentWeather(locationKey:String){
-        weatherNetworkDataSource.fetchCurrentWeather(locationKey, Locale.getDefault().language)
+    private suspend fun fetchCurrentWeather(){
+        sharedPreferences.getString("LOCATION_KEY","")
+            ?.let { weatherNetworkDataSource.fetchCurrentWeather(it, Locale.getDefault().language) }
     }
     private fun isFetchCurrentNeeded(lastFetchedTime: ZonedDateTime): Boolean {
         val twoMinutesAgo = ZonedDateTime.now().minusMinutes(2)

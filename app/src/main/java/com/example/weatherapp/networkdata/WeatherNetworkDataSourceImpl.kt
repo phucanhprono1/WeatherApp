@@ -1,5 +1,6 @@
 package com.example.weatherapp.networkdata
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weatherapp.api.ServiceFactory
@@ -8,9 +9,13 @@ import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponse
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class WeatherNetworkDataSourceImpl(
-    private val serviceFactory:ServiceFactory
+@Singleton
+class WeatherNetworkDataSourceImpl @Inject constructor(
+    private val serviceFactory:ServiceFactory,
+
 ): WeatherNetworkDataSource {
     private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherResponse>()
     override val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
@@ -18,10 +23,9 @@ class WeatherNetworkDataSourceImpl(
 
     override suspend fun fetchCurrentWeather(locationKey: String, language: String) {
         try {
-            val fetchedCurrentWeather = GlobalScope.async {
-                serviceFactory.createWeatherApi()
-                    .getCurrentWeather(locationKey,serviceFactory.API_KEY,language)
-            }.await()
+            val fetchedCurrentWeather = serviceFactory.createWeatherApi()
+                .getCurrentWeather(locationKey,serviceFactory.API_KEY,language)
+                .await()
             _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }catch (e:Exception){
             e.printStackTrace()
@@ -35,7 +39,7 @@ class WeatherNetworkDataSourceImpl(
         try {
             val fetchedFutureWeather = GlobalScope.async {
                 serviceFactory.createWeatherApi()
-                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language)
+                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language,true)
             } .await()
 
             _downloadedFutureWeather.postValue(fetchedFutureWeather)

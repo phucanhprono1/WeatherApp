@@ -12,38 +12,23 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
-class CurrentWeatherViewModel(
+class CurrentWeatherViewModel  @Inject constructor(
     context: Context,
     lifecycleOwner: LifecycleOwner,
     private val forecastRepository: ForecastRepository
 ) : WeatherViewModel(forecastRepository,context, lifecycleOwner) {
 
-    val currentWeather by lazyDeferred(lifecycleOwner) {
-        sharedPreferences.getString("LOCATION_KEY", "")?.let {
-            try {
-                forecastRepository.getCurrentWeather(true, it)
-            } catch (e: IOException) {
-                // Handle IO exception (e.g., network issues)
-                // Handle error: e.message
-                null
-            } catch (e: HttpException) {
-                // Handle HTTP exception (e.g., HTTP 503)
-                // Handle error: e.message
-                null
-            } catch (e: Exception) {
-                // Handle other exceptions
-                // Handle error: e.message
-                null
-            }
-        }
+    val currentWeather by lazyDeferred {
+        forecastRepository.getCurrentWeather(true)
     }
 
-    val forecastWeather by lazyDeferred(lifecycleOwner) {
+    val forecastWeather by lazyDeferred {
         sharedPreferences.getString("LOCATION_KEY", "")?.let {
             try {
                 viewModelScope.async(Dispatchers.IO) {
-                    ServiceFactory.createWeatherApi().get5dayForecast(it, ServiceFactory.API_KEY,"en-us")
+                    ServiceFactory.createWeatherApi().get5dayForecast(it, ServiceFactory.API_KEY,"en-us",true)
                 }.await()
             } catch (e: IOException) {
                 // Handle IO exception (e.g., network issues)

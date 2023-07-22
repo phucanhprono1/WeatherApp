@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_translucent">
+    android:background="@color/transparent">
     <ImageView
         android:layout_width="@dimen/_16sdp"
         android:layout_height="@dimen/_16sdp"
         android:src="@drawable/ic_cloud"
-        android:layout_marginStart="@dimen/_10sdp"
+
         android:layout_marginTop="@dimen/_10sdp"
         android:id="@+id/ivWeatherConditionRcv"
         />
@@ -16,10 +16,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvDayRcv"
         android:text="Today"
-        android:textSize="@dimen/_10sdp"
+        android:textSize="@dimen/_12sdp"
         android:textColor="@color/white"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_toEndOf="@id/ivWeatherConditionRcv"
         />
     <TextView
@@ -31,6 +32,7 @@
         android:textColor="@color/white"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:layout_toEndOf="@id/tvDayRcv"
         />
 
@@ -42,6 +44,8 @@
         android:textSize="@dimen/_12sdp"
         android:textColor="@color/white"
         android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+
         android:layout_alignParentRight="true"
         />
 
