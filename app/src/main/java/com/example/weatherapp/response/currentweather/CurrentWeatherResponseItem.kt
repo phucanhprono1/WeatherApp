@@ -25,10 +25,4 @@ data class CurrentWeatherResponseItem(
 ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID
-    val zonedDateTime: ZonedDateTime
-        get() {
-            val instant = Instant.ofEpochSecond(EpochTime)
-
-            return ZonedDateTime.ofInstant(instant, ZoneId.of(StaticConfig.tz_id))
-        }
 }

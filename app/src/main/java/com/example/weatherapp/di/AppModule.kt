@@ -50,7 +50,7 @@ object AppModule {
     fun provideForecastDatabase(context: Context): ForecastDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
-            ForecastDatabase::class.java, "accuwea.db"
+            ForecastDatabase::class.java, "accuweat.db"
         ).build()
     }
     @Provides
@@ -78,9 +78,8 @@ object AppModule {
     fun provideCurrentWeatherViewModelFactory(
         context: Context,
         lifecycleOwner: LifecycleOwner,
-        forecastRepository: ForecastRepository,
-        sharedPreferences: SharedPreferences
+        forecastRepository: ForecastRepository
     ): CurrentWeatherViewModelFactory {
-        return CurrentWeatherViewModelFactory(context, lifecycleOwner, forecastRepository, sharedPreferences)
+        return CurrentWeatherViewModelFactory(context, lifecycleOwner, forecastRepository)
     }
 }

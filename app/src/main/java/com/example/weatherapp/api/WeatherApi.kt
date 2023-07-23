@@ -10,7 +10,7 @@ import retrofit2.http.Query
 
 interface WeatherApi {
     @GET("currentconditions/v1/{locationKey}")
-    suspend fun getCurrentWeather(
+    fun getCurrentWeather(
         @Path("locationKey") locationKey: String,
         @Query("apikey") apiKey: String,
         @Query("language") language: String

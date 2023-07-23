@@ -32,10 +32,10 @@ class CurrentWeatherFragment : ScopedFragment() {
     companion object {
         fun newInstance() = CurrentWeatherFragment()
     }
-    @Inject
-    lateinit var forecastRepository: ForecastRepository
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
+//    @Inject
+//    lateinit var forecastRepository: ForecastRepository
+//    @Inject
+//    lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var viewModelFactory: CurrentWeatherViewModelFactory
     private lateinit var viewModel: CurrentWeatherViewModel
@@ -46,7 +46,7 @@ class CurrentWeatherFragment : ScopedFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCurrentWeatherBinding.inflate(inflater, container, false)
-        viewModelFactory = CurrentWeatherViewModelFactory(requireContext(), this, forecastRepository, sharedPreferences)
+//        viewModelFactory = CurrentWeatherViewModelFactory(requireContext(), this, forecastRepository, sharedPreferences)
         return binding.root
     }
 
@@ -63,8 +63,8 @@ class CurrentWeatherFragment : ScopedFragment() {
         val currentweather = viewModel.currentWeather.await()
         currentweather.observe(viewLifecycleOwner) {
             if (it == null) return@observe
-            binding.tvTemp.text = it.Temperature.toString()
-            binding.tvUnitDegree.text = it.Unit
+            binding.tvTemp.text = Math.round(it.Temperature).toInt().toString()
+            binding.tvUnitDegree.text = "°${it.Unit}"
             binding.weatherCondition.text = it.WeatherText
 
         }

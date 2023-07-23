@@ -9,12 +9,12 @@ import com.example.weatherapp.repository.ForecastRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+//@Singleton
 class CurrentWeatherViewModelFactory @Inject constructor(
     private val applicationContext: Context, // Use the applicationContext instead of context
     private val lifecycleOwner: LifecycleOwner,
     private val forecastRepository: ForecastRepository,
-    private val sharedPreferences: SharedPreferences
+
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

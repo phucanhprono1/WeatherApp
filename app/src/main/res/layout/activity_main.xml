@@ -5,11 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/night_background"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:fitsSystemWindows="true">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/transparent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Left Button -->
+            <ImageButton
+                android:id="@+id/leftButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_add"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="onLeftButtonClick"
+                android:contentDescription="@string/add" />
+
+            <!-- Title TextView -->
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_20sdp" />
+
+            <!-- Right Menu Button -->
+            <ImageButton
+                android:id="@+id/rightMenuButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/add"
+                android:onClick="onRightMenuButtonClick"
+                android:padding="8dp"
+                android:src="@drawable/ic_menu" />
+
+        </RelativeLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+    <!-- TextView -->
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/circleIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_below="@+id/titleTextView"
+        app:ci_height="8dp"
+        app:ci_width="8dp"
+        app:ci_margin="4dp"
+        app:ci_animator="@animator/scale_with_alpha"
+
+        app:ci_orientation="horizontal"
+        app:ci_gravity="center" />
+
+    <!-- ViewPager2 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager2Main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Indicator3 -->
 
 </LinearLayout>

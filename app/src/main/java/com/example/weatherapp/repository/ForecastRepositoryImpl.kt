@@ -1,6 +1,7 @@
 package com.example.weatherapp.repository
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.weatherapp.entity.currentweather.UnitLocalizedCurrentWeather
 import com.example.weatherapp.networkdata.WeatherNetworkDataSource
@@ -15,7 +16,7 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+
 class ForecastRepositoryImpl @Inject constructor(
     private val currentWeatherDao: CurrentWeatherDao,
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
@@ -32,6 +33,7 @@ class ForecastRepositoryImpl @Inject constructor(
     private fun persistFetchedCurrentWeather(fetchedWeather: CurrentWeatherResponse){
         GlobalScope.launch (Dispatchers.IO){
             currentWeatherDao.upsert(fetchedWeather[0])
+            Log.d("ForecastRepositoryImpl", "persistFetchedCurrentWeather: ")
         }
 
 
@@ -45,16 +47,17 @@ class ForecastRepositoryImpl @Inject constructor(
         }
     }
     private suspend fun initWeatherData(){
-        if(isFetchCurrentNeeded(ZonedDateTime.now())){
-            fetchCurrentWeather()
-        }
+        fetchCurrentWeather()
+//        if(isFetchCurrentNeeded(ZonedDateTime.now())){
+//            fetchCurrentWeather()
+//        }
     }
     private suspend fun fetchCurrentWeather(){
         sharedPreferences.getString("LOCATION_KEY","")
             ?.let { weatherNetworkDataSource.fetchCurrentWeather(it, Locale.getDefault().language) }
     }
     private fun isFetchCurrentNeeded(lastFetchedTime: ZonedDateTime): Boolean {
-        val twoMinutesAgo = ZonedDateTime.now().minusMinutes(2)
-        return lastFetchedTime.isBefore(twoMinutesAgo)
+        val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(30)
+        return lastFetchedTime.isBefore(thirtyMinutesAgo)
     }
 }

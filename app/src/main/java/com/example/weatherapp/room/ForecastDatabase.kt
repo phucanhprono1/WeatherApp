@@ -10,20 +10,20 @@ import com.example.weatherapp.response.currentweather.CurrentWeatherResponseItem
 abstract class ForecastDatabase() : RoomDatabase(){
     abstract fun currentWeatherDao(): CurrentWeatherDao
 
-    companion object {
-        @Volatile private var instance: ForecastDatabase? = null
-        private val LOCK = Any()
-        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-            instance ?: buildDatabase(context).also { instance = it }
-        }
-
-        private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(
-                context.applicationContext,
-                ForecastDatabase::class.java, "accuwea.db"
-            )
-            .build()
-
-    }
+//    companion object {
+//        @Volatile private var instance: ForecastDatabase? = null
+//        private val LOCK = Any()
+//        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
+//            instance ?: buildDatabase(context).also { instance = it }
+//        }
+//
+//        private fun buildDatabase(context: Context) =
+//            Room.databaseBuilder(
+//                context.applicationContext,
+//                ForecastDatabase::class.java, "accuwea.db"
+//            )
+//            .build()
+//
+//    }
 
 }
