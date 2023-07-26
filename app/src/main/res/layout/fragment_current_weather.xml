@@ -5,89 +5,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
-    android:fadeScrollbars="false"
-    tools:context=".fragment.currentweather.CurrentWeatherFragment">
+    android:id="@+id/scrollView"
+    tools:context=".ui.fragment.currentweather.CurrentWeatherFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_marginTop="@dimen/_100sdp">
+            android:layout_marginTop="@dimen/_55sdp"
+            android:orientation="vertical">
+
             <LinearLayout
+                android:id="@+id/linearTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:id="@+id/linearTemp">
+                android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/tvTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30"
-                    android:id="@+id/tvTemp"
-                    android:textSize="@dimen/_80sdp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    />
+                    android:textSize="@dimen/_80sdp" />
+
                 <TextView
                     android:id="@+id/tvUnitDegree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="°C"
-                    android:paddingTop="@dimen/_10sdp"
-                    android:textSize="@dimen/_30sdp"
-                    android:textColor="@color/white"
                     android:layout_gravity="start"
-                    />
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="°C"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_30sdp" />
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/weatherConditionandMinMaxTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:id="@+id/weatherConditionandMinMaxTemp">
+                android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/weatherCondition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/weatherCondition"
+                    android:layout_gravity="center"
                     android:text="Cloudy"
-                    android:textSize="@dimen/_18sdp"
                     android:textColor="@color/white"
 
-                    android:layout_gravity="center"
-                    />
+                    android:textSize="@dimen/_14sdp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="30°C/23°C"
-                    android:textSize="@dimen/_18sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:textColor="@color/white"
-                    android:layout_toRightOf="@+id/weatherCondition"
                     android:layout_below="@id/tvTemp"
                     android:layout_gravity="center"
-                    />
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_toRightOf="@+id/weatherCondition"
+                    android:text="30°/23°"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14sdp" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AQI: 30"
-                android:textSize="@dimen/_18sdp"
-                android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:background="@drawable/background_translucent"
-                />
+                android:text="AQI: 30"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp" />
         </LinearLayout>
 
-            <LinearLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/_160sdp"
+                android:layout_marginTop="@dimen/_140sdp"
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_10sdp"
                 android:background="@drawable/background_translucent"
@@ -152,17 +154,270 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_translucent"
+            android:orientation="vertical"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_10sdp"
             android:layout_marginTop="@dimen/_10sdp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_clock"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="24-hour forecast"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    />
+
+            </LinearLayout>
 
             <com.github.mikephil.charting.charts.LineChart
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
                 android:id="@+id/lineChart"
-                android:layout_margin="@dimen/_10sdp"
-                />
+                android:layout_width="match_parent"
+                android:layout_height="109dp"
+                android:layout_margin="@dimen/_10sdp" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_160sdp"
+            android:background="@color/transparent"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:weightSum="2"
+            >
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@color/transparent"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/background_translucent">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/background_translucent"
+                    >
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_weight="1"
+                android:background="@drawable/background_translucent"
+                android:orientation="vertical">
+
+                <!-- Dòng Humidity -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Humidity:"
+
+                        android:textColor="@color/white"
+                         />
+
+                    <!-- Chỉ số Humidity -->
+                    <TextView
+                        android:id="@+id/textHumidity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"
+                        android:gravity="right" />
+                </LinearLayout>
+
+                <!-- Dòng kẻ trắng -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/white" />
+
+                <!-- Dòng Real feel -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Real feel:"
+                        android:textColor="@color/white" />
+
+                    <!-- Chỉ số Real feel -->
+                    <TextView
+                        android:id="@+id/textRealFeel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:layout_gravity="right"
+                        android:gravity="right"/>
+                </LinearLayout>
+
+
+                <!-- Dòng kẻ trắng -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/white" />
+
+                <!-- Dòng UV -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="UV:"
+                         />
+
+                    <!-- Chỉ số UV -->
+                    <TextView
+                        android:id="@+id/textUV"
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:gravity="right"/>
+                </LinearLayout>
+
+
+                <!-- Dòng kẻ trắng -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/white" />
+
+                <!-- Dòng Pressure -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="Pressure:"
+                         />
+
+                    <!-- Chỉ số Pressure -->
+                    <TextView
+                        android:id="@+id/textPressure"
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="right"
+                        android:gravity="right"/>
+                </LinearLayout>
+
+                <!-- Dòng kẻ trắng -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/white" />
+
+                <!-- Dòng Chance of rain -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="Chance of rain:"
+                         />
+
+                    <!-- Chỉ số Chance of rain -->
+                    <TextView
+                        android:id="@+id/textChanceOfRain"
+                        android:layout_width="0dp"
+                        android:text="20%"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="right"
+                        />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:background="@android:color/white" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </ScrollView>

@@ -7,9 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
+import com.example.weatherapp.response.FivedaysForecast.DailyForecast
 import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
+import com.example.weatherapp.weatherunit.forecastweather.UnitLocalizedFiveDaysForecastWeather
 
-class WeatherForecastAdapter(val fiveDaysForecast: FiveDaysForecast) : RecyclerView.Adapter<WeatherForecastAdapter.WeatherForecastViewHolder>() {
+class WeatherForecastAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather>) : RecyclerView.Adapter<WeatherForecastAdapter.WeatherForecastViewHolder>() {
     class WeatherForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
         val iconWeather = view.findViewById<ImageView>(R.id.ivWeatherConditionRcv)
@@ -25,12 +27,16 @@ class WeatherForecastAdapter(val fiveDaysForecast: FiveDaysForecast) : RecyclerV
     }
 
     override fun getItemCount(): Int {
-        return 3
+        if (list.size ==0) {
+            return 0
+        }
+        else
+            return 3
     }
 
     override fun onBindViewHolder(holder: WeatherForecastViewHolder, position: Int) {
-        val forecast = fiveDaysForecast.DailyForecasts.get(position)
-        when(forecast.Day.Icon){
+        val forecast = list.get(position)
+        when(forecast.icon_day){
             1-> holder.iconWeather.setImageResource(R.drawable.sunny_01)
             2-> holder.iconWeather.setImageResource(R.drawable.mostly_sunny_02)
             3-> holder.iconWeather.setImageResource(R.drawable.partly_sunny_03)
@@ -73,7 +79,7 @@ class WeatherForecastAdapter(val fiveDaysForecast: FiveDaysForecast) : RecyclerV
         }
 
         holder.tvDay.text = "Today"
-        holder.weatherCondition.text = forecast.Day.IconPhrase
-        holder.tvMinMaxTemp.text = forecast.Temperature.Minimum.Value.toString() + "°${forecast.Temperature.Maximum.Unit}" + "/" + forecast.Temperature.Maximum.Value.toString() + "°${forecast.Temperature.Minimum.Unit}"
+        holder.weatherCondition.text = forecast.iconPhrase_day
+        holder.tvMinMaxTemp.text = forecast.minTemperature.toString() + "°" + "/" + forecast.maxTemperature.toString() + "°"
     }
 }

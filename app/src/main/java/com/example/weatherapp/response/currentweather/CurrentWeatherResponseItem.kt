@@ -3,10 +3,6 @@ package com.example.weatherapp.response.currentweather
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.weatherapp.config.StaticConfig
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 
 const val CURRENT_WEATHER_ID = 0
 @Entity(tableName = "current_weather")
@@ -21,8 +17,30 @@ data class CurrentWeatherResponseItem(
     @Embedded(prefix = "temperature_")
     val Temperature: Temperature,
     val WeatherIcon: Int,
-    val WeatherText: String
-){
+    val WeatherText: String,
+    @Embedded(prefix = "pressure_")
+    val Pressure: Pressure,
+    @Embedded(prefix = "real_feel_temperature_")
+    val RealFeelTemperature: RealFeelTemperature,
+    val RelativeHumidity: Int,
+    val UVIndex: Int,
+    val UVIndexText: String,
+
+
+
+    ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID
+//    @Inject
+//    @Ignore
+//    lateinit var sharedPreferences: SharedPreferences
+//    val zonedDateTime: ZonedDateTime
+//
+//        get() {
+//            val instant = Instant.ofEpochSecond(EpochTime)
+//
+//
+//            val zoneId = ZoneId.of(sharedPreferences.getString(tz_id, ""))
+//            return ZonedDateTime.ofInstant(instant, zoneId)
+//        }
 }

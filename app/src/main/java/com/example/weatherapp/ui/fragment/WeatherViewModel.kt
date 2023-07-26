@@ -1,4 +1,4 @@
-package com.example.weatherapp.fragment
+package com.example.weatherapp.ui.fragment
 
 import android.content.Context
 import android.preference.PreferenceManager

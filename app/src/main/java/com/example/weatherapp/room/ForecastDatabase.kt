@@ -4,11 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.weatherapp.response.FivedaysForecast.DailyForecast
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponseItem
 
-@Database(entities = [CurrentWeatherResponseItem::class], version = 1)
+@Database(entities = [CurrentWeatherResponseItem::class,DailyForecast::class], version = 1)
+@TypeConverters(LocalDateConverter::class)
 abstract class ForecastDatabase() : RoomDatabase(){
     abstract fun currentWeatherDao(): CurrentWeatherDao
+    abstract fun futureWeatherDao(): FutureWeatherDao
 
 //    companion object {
 //        @Volatile private var instance: ForecastDatabase? = null

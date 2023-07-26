@@ -11,7 +11,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import javax.inject.Inject
 import javax.inject.Singleton
-
+const val FORECAST_DAYS_COUNT = 5
 @Singleton
 class WeatherNetworkDataSourceImpl @Inject constructor(
     private val serviceFactory:ServiceFactory,
@@ -24,7 +24,7 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
     override suspend fun fetchCurrentWeather(locationKey: String, language: String) {
         try {
             val fetchedCurrentWeather = serviceFactory.createWeatherApi()
-                .getCurrentWeather(locationKey,serviceFactory.API_KEY,language)
+                .getCurrentWeather(locationKey,serviceFactory.API_KEY,language,true)
                 .await()
             _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
         }catch (e:Exception){

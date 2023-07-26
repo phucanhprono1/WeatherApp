@@ -1,4 +1,4 @@
-package com.example.weatherapp.entity.currentweather
+package com.example.weatherapp.weatherunit.currentweather
 
 import androidx.room.ColumnInfo
 
@@ -24,6 +24,15 @@ class ImperialCurrentWeather(
     @ColumnInfo(name = "WeatherIcon")
     override val WeatherIcon: Int,
     @ColumnInfo(name = "WeatherText")
-    override val WeatherText: String
+    override val WeatherText: String,
+    override val UVIndex: Int,
+    @ColumnInfo(name = "pressure_Imperial_Value")
+    override val pressure: Double,
+    @ColumnInfo(name = "pressure_Imperial_Unit")
+    override val pressureUnit: String,
+    @ColumnInfo(name = "real_feel_temperature_imperial_Value")
+    override val RealFeelTemperature: Double,
+    override val RelativeHumidity: Int
+
 
 ):UnitLocalizedCurrentWeather

@@ -28,4 +28,5 @@
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorError">#B00020</color>
     <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="orange">#FFBF00</color>
 </resources>

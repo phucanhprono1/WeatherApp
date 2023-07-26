@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Settomhs">
+        <SwitchPreference
+            android:key="USE_DEVICE_LOCATION"
+            android:title="Use device location"
+            android:summary="Automatically get weather for your current location"
+            android:defaultValue="true"
+            android:disableDependentsState="true"/>
+        <EditTextPreference
+            android:key="CUSTOM_LOCATION"
+            android:title="Custom location"
+            android:summary="Enter a custom location"
+            android:dialogTitle="Enter a custom location"
+            android:defaultValue="Hanoi"
+            android:dependency="USE_DEVICE_LOCATION"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Units">
+        <ListPreference
+            android:key="UNIT_SYSTEM"
+            android:title="Unit System"
+            android:summary="%s"
+            android:defaultValue="METRIC"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

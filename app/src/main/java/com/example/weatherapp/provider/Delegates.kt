@@ -11,3 +11,6 @@ import kotlinx.coroutines.async
 fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
     return lazy { GlobalScope.async(start = CoroutineStart.LAZY) { block.invoke(this) } }
 }
+fun <T> eagerDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
+    return lazy { GlobalScope.async(start = CoroutineStart.ATOMIC) { block.invoke(this) } }
+}

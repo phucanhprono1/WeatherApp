@@ -1,4 +1,4 @@
-package com.example.weatherapp.entity.currentweather
+package com.example.weatherapp.weatherunit.currentweather
 
 
 interface UnitLocalizedCurrentWeather {
@@ -13,4 +13,10 @@ interface UnitLocalizedCurrentWeather {
     val Unit: String
     val WeatherIcon: Int
     val WeatherText: String
+    val UVIndex: Int
+    val pressure: Double
+    val pressureUnit: String
+    val RealFeelTemperature: Double
+    val RelativeHumidity: Int
+
 }

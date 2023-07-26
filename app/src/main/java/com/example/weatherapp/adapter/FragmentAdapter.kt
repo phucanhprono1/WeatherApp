@@ -19,4 +19,8 @@ class FragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter
     override fun createFragment(position: Int): Fragment {
         return fragmentList[position]
     }
+
+    fun getFragmentAtPosition(position: Int): Fragment? {
+        return fragmentList.getOrNull(position)
+    }
 }

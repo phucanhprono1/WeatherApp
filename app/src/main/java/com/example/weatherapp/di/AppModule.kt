@@ -7,19 +7,21 @@ import android.preference.PreferenceManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.room.Room
 import com.example.weatherapp.api.ServiceFactory
-import com.example.weatherapp.fragment.currentweather.CurrentWeatherFragment
-import com.example.weatherapp.fragment.currentweather.CurrentWeatherViewModelFactory
+import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
+import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherViewModelFactory
 import com.example.weatherapp.networkdata.WeatherNetworkDataSource
 import com.example.weatherapp.networkdata.WeatherNetworkDataSourceImpl
 import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.ForecastRepositoryImpl
 import com.example.weatherapp.room.CurrentWeatherDao
 import com.example.weatherapp.room.ForecastDatabase
+import com.example.weatherapp.room.FutureWeatherDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.scopes.FragmentScoped
 import dagger.hilt.components.SingletonComponent
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -50,12 +52,17 @@ object AppModule {
     fun provideForecastDatabase(context: Context): ForecastDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
-            ForecastDatabase::class.java, "accuweat.db"
-        ).build()
+            ForecastDatabase::class.java, "accuweath.db"
+        ).allowMainThreadQueries()
+            .build()
     }
     @Provides
     fun provideCurrentWeatherDao(forecastDatabase: ForecastDatabase): CurrentWeatherDao {
         return forecastDatabase.currentWeatherDao()
+    }
+    @Provides
+    fun provideFutureWeatherDao(forecastDatabase: ForecastDatabase): FutureWeatherDao {
+        return forecastDatabase.futureWeatherDao()
     }
     @Provides
     fun provideServiceFactory(): ServiceFactory {
@@ -70,9 +77,10 @@ object AppModule {
     fun provideForecastRepository(
         currentWeatherDao: CurrentWeatherDao,
         weatherNetworkDataSource: WeatherNetworkDataSource,
-        sharedPreferences: SharedPreferences
+        sharedPreferences: SharedPreferences,
+        futureWeatherDao: FutureWeatherDao
     ): ForecastRepository {
-        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences )
+        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences, futureWeatherDao )
     }
     @Provides
     fun provideCurrentWeatherViewModelFactory(
