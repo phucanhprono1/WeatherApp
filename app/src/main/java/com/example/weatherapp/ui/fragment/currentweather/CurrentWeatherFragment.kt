@@ -46,13 +46,23 @@ class CurrentWeatherFragment : ScopedFragment() {
         return binding.root
 
     }
+    fun showTemperatureLayout() {
+        binding.linearTemp.visibility = View.VISIBLE
+    }
 
+    fun hideTemperatureLayout() {
+        binding.linearTemp.visibility = View.INVISIBLE
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
 
         viewModel = ViewModelProvider(this,viewModelFactory).get(CurrentWeatherViewModel::class.java)
         val nonLiveCurrentWeather = viewModel.currentWeatherNonLive
+
+
+        bindUi()
+        if(nonLiveCurrentWeather == null) return
         binding.tvTemp.text = Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
         binding.tvUnitDegree.text = "°${nonLiveCurrentWeather.Unit}"
         binding.weatherCondition.text = nonLiveCurrentWeather.WeatherText
@@ -63,8 +73,6 @@ class CurrentWeatherFragment : ScopedFragment() {
         val nonLiveForecastWeather = viewModel.forecastWeatherNonLive
         binding.rvForecast.adapter = WeatherForecastAdapter(nonLiveForecastWeather)
         binding.rvForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        bindUi()
-
     }
     private val mainActivity: MainActivity?
         get() = activity as? MainActivity

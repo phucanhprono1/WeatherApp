@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var fragmentList : ArrayList<Fragment>
     private lateinit var fragmentAdapter: FragmentAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    var locationName = ""
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -53,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     // Add a reference to the current fragment
     private var currentFragment: CurrentWeatherFragment? = null
+    private var currentVisibleFragmentPosition: Int = 0
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -67,7 +69,30 @@ class MainActivity : AppCompatActivity() {
                 pageTransformer.setPageIdle(false)
             }
         }
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            if (currentVisibleFragmentPosition >= 0) {
+                val oldVisibleFragment = fragmentAdapter.getFragmentAtPosition(currentVisibleFragmentPosition)
+                if (oldVisibleFragment is CurrentWeatherFragment) {
+                    oldVisibleFragment.hideTemperatureLayout()
+                }
+            }
 
+            // Update the Toolbar title with the location name of the selected fragment
+            binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
+
+            // Show the temperature layout for the selected fragment
+            val selectedFragment = fragmentAdapter.getFragmentAtPosition(position)
+            if (selectedFragment is CurrentWeatherFragment) {
+                selectedFragment.showTemperatureLayout()
+            }
+
+            // Update the currentVisibleFragmentPosition
+            currentVisibleFragmentPosition = position
+            // Update the Toolbar title with the location name of the selected fragment
+            binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
+
+        }
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
@@ -94,6 +119,7 @@ class MainActivity : AppCompatActivity() {
             // Store the scroll position for synchronization in the next scroll event
             previousScrollPosition = totalScrollOffset
         }
+
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,57 +130,7 @@ class MainActivity : AppCompatActivity() {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
-
-        fragmentAdapter = FragmentAdapter(this)
-        fragmentAdapter.addFragment(CurrentWeatherFragment())
-        fragmentAdapter.addFragment(CurrentWeatherFragment())
-        fragmentAdapter.addFragment(CurrentWeatherFragment())
-        binding.rightMenuButton.setOnClickListener {
-            showPopUpMenu(it)
-        }
-
-        binding.viewPager2Main.adapter = fragmentAdapter
-
-        binding.viewPager2Main.adapter = fragmentAdapter
-        binding.viewPager2Main.setPageTransformer(pageTransformer)
-        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-//        binding.viewPager2Main.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//            override fun onPageScrollStateChanged(state: Int) {
-//                super.onPageScrollStateChanged(state)
-//                // Check if the page is idle after the transition is complete
-//                if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                    // Mark the page as idle in the Horizontal3DPageTransformer
-//                    pageTransformer.setPageIdle(true)
-//                    // Force the transformPage method to be called to update the current fragment's view
-//                    binding.viewPager2Main.post { binding.viewPager2Main.adapter?.notifyDataSetChanged() }
-//                } else {
-//                    // Mark the page as not idle during the transition
-//                    pageTransformer.setPageIdle(false)
-//                }
-//            }
-//            override fun onPageScrolled(
-//                position: Int,
-//                positionOffset: Float,
-//                positionOffsetPixels: Int
-//            ) {
-//                val offset = positionOffset * binding.viewPager2Main.width
-//                for (i in 0 until fragmentAdapter.itemCount) {
-//                    if (i != position) {
-//                        val fragment = fragmentAdapter.getFragmentAtPosition(i)
-//                        fragment?.view?.scrollTo((-offset).toInt(), 0)
-//                    }
-//                }
-//            }
-//
-//            override fun onPageSelected(position: Int) {
-//                // Handle page selection if needed
-//            }
-//
-//
-//        })
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        binding.circleIndicator.setViewPager(binding.viewPager2Main)
-
         if (ContextCompat.checkSelfPermission(
                 this,
                 ACCESS_FINE_LOCATION
@@ -168,6 +144,28 @@ class MainActivity : AppCompatActivity() {
         } else {
             getLocationAndFetchLocationKey()
         }
+        fragmentAdapter = FragmentAdapter(this)
+//        if(sharedPreferences.getString("LOCATION_NAME", "") != "") {
+        locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
+        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
+        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
+        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
+    //}
+
+        binding.rightMenuButton.setOnClickListener {
+            showPopUpMenu(it)
+        }
+
+        binding.viewPager2Main.adapter = fragmentAdapter
+
+        binding.viewPager2Main.adapter = fragmentAdapter
+        binding.viewPager2Main.setPageTransformer(pageTransformer)
+        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+
+
+        binding.circleIndicator.setViewPager(binding.viewPager2Main)
+
+
     }
     fun showPopUpMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
@@ -251,6 +249,8 @@ class MainActivity : AppCompatActivity() {
         if (response.isSuccessful && response.body() != null) {
             val locationResponse = response.body()!!
             val locationKey = locationResponse.Key
+            locationName = locationResponse.LocalizedName
+            sharedPreferences.edit().putString("LOCATION_NAME", locationResponse.LocalizedName).apply()
 
             // Lưu Location Key vào SharedPreferences
             sharedPreferences.edit().putString("LOCATION_KEY", locationKey).apply()
