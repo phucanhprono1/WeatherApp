@@ -5,5 +5,5 @@ data class TimeZone(
     val GmtOffset: Double,
     val IsDaylightSaving: Boolean,
     val Name: String,
-    val NextOffsetChange: Any
+//    val NextOffsetChange: Any? = null
 )

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="add">add_location</string>
+    <string name="city_name">Tokyo</string>
+    <string name="location_item_temp">30</string>
+    <string name="location_item_weather">Trời nắng</string>
+    <string name="city_manage">Quản lý thành phố</string>
+    <string name="xoa">Xóa</string>
 </resources>

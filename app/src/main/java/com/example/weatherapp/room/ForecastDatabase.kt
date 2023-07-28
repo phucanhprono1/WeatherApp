@@ -7,27 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.weatherapp.response.FivedaysForecast.DailyForecast
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponseItem
+import com.example.weatherapp.response.geolocation.LocationKeyResponse
 
-@Database(entities = [CurrentWeatherResponseItem::class,DailyForecast::class], version = 1)
-@TypeConverters(LocalDateConverter::class)
+@Database(entities = [CurrentWeatherResponseItem::class,DailyForecast::class, LocationKeyResponse::class], version = 1)
+@TypeConverters(LocalDateConverter::class, TimeZoneConverter::class)
 abstract class ForecastDatabase() : RoomDatabase(){
     abstract fun currentWeatherDao(): CurrentWeatherDao
     abstract fun futureWeatherDao(): FutureWeatherDao
-
-//    companion object {
-//        @Volatile private var instance: ForecastDatabase? = null
-//        private val LOCK = Any()
-//        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
-//            instance ?: buildDatabase(context).also { instance = it }
-//        }
-//
-//        private fun buildDatabase(context: Context) =
-//            Room.databaseBuilder(
-//                context.applicationContext,
-//                ForecastDatabase::class.java, "accuwea.db"
-//            )
-//            .build()
-//
-//    }
+    abstract fun locationDao(): LocationDao
 
 }

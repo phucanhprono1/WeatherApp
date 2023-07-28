@@ -26,6 +26,7 @@ import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import com.example.weatherapp.transformer.Horizontal3DPageTransformer
 import com.example.weatherapp.transformer.LinearTemp3DPageTransformer
+import com.example.weatherapp.ui.add_location.location_list.LocationList
 
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -154,6 +155,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.rightMenuButton.setOnClickListener {
             showPopUpMenu(it)
+        }
+        // Them Add Location
+        binding.leftButton.setOnClickListener {
+            val addIntent = Intent(this@MainActivity, LocationList::class.java)
+            startActivity(addIntent)
         }
 
         binding.viewPager2Main.adapter = fragmentAdapter

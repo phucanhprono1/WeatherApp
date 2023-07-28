@@ -11,4 +11,10 @@ interface LocationApi {
         @Query("apikey") apiKey: String,
         @Query("q") location: String
     ): Response<LocationKeyResponse>
+
+    @GET("locations/v1/cities/search")
+    suspend fun getLocationByName(
+        @Query("apikey") apiKey: String,
+        @Query("q") location: String
+    ) : Response<List<LocationKeyResponse>>
 }

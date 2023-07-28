@@ -31,16 +31,4 @@ data class CurrentWeatherResponseItem(
     ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID
-//    @Inject
-//    @Ignore
-//    lateinit var sharedPreferences: SharedPreferences
-//    val zonedDateTime: ZonedDateTime
-//
-//        get() {
-//            val instant = Instant.ofEpochSecond(EpochTime)
-//
-//
-//            val zoneId = ZoneId.of(sharedPreferences.getString(tz_id, ""))
-//            return ZonedDateTime.ofInstant(instant, zoneId)
-//        }
 }
