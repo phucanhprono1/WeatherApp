@@ -170,7 +170,9 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.circleIndicator.setViewPager(binding.viewPager2Main)
-
+        binding.leftButton.setOnClickListener {
+            startActivity(Intent(this, LocationList::class.java))
+        }
 
     }
     fun showPopUpMenu(view: View) {
