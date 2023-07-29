@@ -21,7 +21,7 @@ class SearchResultAdapter(
     }
 
     interface OnResultClickListener {
-        fun onResultClick(LocationKeyResponse: LocationKeyResponse)
+        fun onResultClick( location: LocationKeyResponse)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {

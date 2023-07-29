@@ -3,15 +3,21 @@ package com.example.weatherapp.ui.add_location.location_list
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.adapter.LocationRecyclerAdapter
+import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import com.example.weatherapp.ui.add_location.search.SearchLocation
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-
-class LocationListViewModel : ViewModel() {
+@HiltViewModel
+class LocationListViewModel @Inject constructor(
+    var locationRepo : LocationRepositoryImpl) : ViewModel() {
 
     private var locationLiveData = MutableLiveData<List<LocationKeyResponse>>()
     private var isSelectedMode : Boolean = false
@@ -33,7 +39,15 @@ class LocationListViewModel : ViewModel() {
     }
 
     fun deleteLocation(adapter : LocationRecyclerAdapter){
+        val selectedPositions = adapter.getSelectedItems()
+        selectedPositions?.let { positions ->
+            positions.sortedDescending().forEach { position ->
+                locationRepo.deleteCity(adapter.getLocationList()[position])
+            }
+        }
         adapter.removeSelectedItems()
+
+
         isSelectedMode = false
     }
 

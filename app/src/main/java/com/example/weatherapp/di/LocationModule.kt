@@ -4,6 +4,7 @@ import com.example.weatherapp.repository.LocationRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.room.CurrentWeatherDao
 import com.example.weatherapp.room.ForecastDatabase
+import com.example.weatherapp.room.LocationDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,13 +15,13 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object LocationModule {
 
-//    @Provides
-//    fun provideLocationDao(forecastDatabase: ForecastDatabase): LocationDao {
-//        return forecastDatabase.locationDao()
-//    }
+    @Provides
+    fun provideLocationDao(forecastDatabase: ForecastDatabase): LocationDao {
+        return forecastDatabase.locationDao()
+    }
 
     @Provides
-    fun provideLocationRepo(): LocationRepository {
-        return LocationRepositoryImpl()
+    fun provideLocationRepo(locationDao: LocationDao): LocationRepository {
+        return LocationRepositoryImpl(locationDao)
     }
 }

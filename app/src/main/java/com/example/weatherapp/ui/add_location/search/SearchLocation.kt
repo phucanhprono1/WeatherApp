@@ -65,7 +65,8 @@ class SearchLocation : AppCompatActivity(), SearchResultAdapter.OnResultClickLis
         }
     }
 
-    override fun onResultClick(LocationKeyResponse: LocationKeyResponse) {
-
+    override fun onResultClick(location: LocationKeyResponse) {
+        locationRepo.insertNewCity(location)
+        finish()
     }
 }

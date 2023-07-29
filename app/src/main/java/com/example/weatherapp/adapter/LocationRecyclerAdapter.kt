@@ -6,15 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.LocationListItemBinding
+import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
-
+import javax.inject.Inject
 
 class LocationRecyclerAdapter(
     private var listener: OnLocationLongPressListener
     )
     : RecyclerView.Adapter<LocationRecyclerAdapter.LocationViewHolder>(){
-
     private var locationList = ArrayList<LocationKeyResponse>()
     private var checkedItems: ArrayList<Boolean> = ArrayList()
     private var isSelectionMode = false
