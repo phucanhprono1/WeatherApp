@@ -8,12 +8,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.adapter.LocationRecyclerAdapter
 import com.example.weatherapp.databinding.ActivityLocationListBinding
+import com.example.weatherapp.repository.LocationRepositoryImpl
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLongPressListener {
 
     private lateinit var binding: ActivityLocationListBinding
     private lateinit var viewModel: LocationListViewModel
     private var locationAdapter : LocationRecyclerAdapter = LocationRecyclerAdapter(this)
+
+    @Inject
+    lateinit var locationRepo : LocationRepositoryImpl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,5 +85,11 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
     override fun onLocationLongPress() {
         if(!viewModel.getSelectedMode()) viewModel.setSelectedMode(true)
         UpdateUI()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val locationList = locationRepo.getAllCity()
+        locationAdapter.setLocationKeyResponseList(locationList)
     }
 }
