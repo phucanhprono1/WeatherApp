@@ -23,6 +23,7 @@ interface WeatherApi {
         @Path("locationKey") locationKey: String,
         @Query("apikey") apiKey: String,
         @Query("language") language: String,
+        @Query("details") details: Boolean,
         @Query("metric") metric: Boolean
         ): FiveDaysForecast
     @GET("/forecasts/v1/hourly/12hour/{locationKey}")

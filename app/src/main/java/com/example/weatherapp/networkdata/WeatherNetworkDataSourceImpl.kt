@@ -41,7 +41,7 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
         try {
             val fetchedFutureWeather = GlobalScope.async {
                 serviceFactory.createWeatherApi()
-                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language,true)
+                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language,true,true)
             } .await()
 
             _downloadedFutureWeather.postValue(fetchedFutureWeather)
