@@ -5,7 +5,7 @@ import com.example.weatherapp.response.geolocation.TimeZone
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TimeZoneConverter {
+object TimeZoneConverter {
     @TypeConverter
     fun fromString(value: String): TimeZone {
         val type = object : TypeToken<TimeZone>() {}.type

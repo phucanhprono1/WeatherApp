@@ -16,6 +16,7 @@ import com.example.weatherapp.repository.ForecastRepositoryImpl
 import com.example.weatherapp.room.CurrentWeatherDao
 import com.example.weatherapp.room.ForecastDatabase
 import com.example.weatherapp.room.FutureWeatherDao
+import com.example.weatherapp.room.HourlyForecastDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,6 +50,10 @@ object AppModule {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
     @Provides
+    fun provideHourlyForecastDao(forecastDatabase: ForecastDatabase): HourlyForecastDao {
+        return forecastDatabase.hourlyForecastDao()
+    }
+    @Provides
     fun provideForecastDatabase(context: Context): ForecastDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
@@ -78,9 +83,10 @@ object AppModule {
         currentWeatherDao: CurrentWeatherDao,
         weatherNetworkDataSource: WeatherNetworkDataSource,
         sharedPreferences: SharedPreferences,
-        futureWeatherDao: FutureWeatherDao
+        futureWeatherDao: FutureWeatherDao,
+        hourlyForecastDao: HourlyForecastDao
     ): ForecastRepository {
-        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences, futureWeatherDao )
+        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences, futureWeatherDao, hourlyForecastDao )
     }
     @Provides
     fun provideCurrentWeatherViewModelFactory(

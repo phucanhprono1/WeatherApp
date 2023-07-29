@@ -17,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 
 import retrofit2.HttpException
 import java.io.IOException
@@ -30,14 +31,17 @@ class CurrentWeatherViewModel  @Inject constructor(
 ) : WeatherViewModel(forecastRepository,context, lifecycleOwner) {
 
     val currentWeatherNonLive = forecastRepository.getWeatherNonLive(true)
-    val forecastWeatherNonLive = forecastRepository.get5dayForecastNonLive(LocalDate.now(),true)
+    val forecastWeatherNonLive = forecastRepository.get5dayForecastNonLive(LocalDateTime.now(),true)
+    val hourlyForecastNonLive = forecastRepository.getHourlyForecastNonLive(LocalDateTime.now(),true)
     val currentWeather by eagerDeferred {
         forecastRepository.getCurrentWeather(true)
     }
     val forecastWeather by lazyDeferred {
-        forecastRepository.getFutureWeatherList(LocalDate.now(),true)
+        forecastRepository.getFutureWeatherList(LocalDateTime.now(),true)
     }
-
+    val hourlyForecast by lazyDeferred {
+        forecastRepository.getHourlyForecastList(LocalDateTime.now(),true)
+    }
     val temperatureData = arrayOf(89f, 91f, 93f, 95f, 96f, 97f, 99f, 98f, 96f, 93f, 91f, 88f)
 
 }
