@@ -59,17 +59,17 @@ class MainActivity : AppCompatActivity() {
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
-        override fun onPageScrollStateChanged(state: Int) {
-            if (state == ViewPager2.SCROLL_STATE_IDLE) {
-                // Mark the page as idle in the Horizontal3DPageTransformer
-                pageTransformer.setPageIdle(true)
-                // Force the transformPage method to be called to update the current fragment's view
-                binding.viewPager2Main.post { binding.viewPager2Main.adapter?.notifyDataSetChanged() }
-            } else {
-                // Mark the page as not idle during the transition
-                pageTransformer.setPageIdle(false)
-            }
-        }
+//        override fun onPageScrollStateChanged(state: Int) {
+//            if (state == ViewPager2.SCROLL_STATE_IDLE) {
+//                // Mark the page as idle in the Horizontal3DPageTransformer
+//                pageTransformer.setPageIdle(true)
+//                // Force the transformPage method to be called to update the current fragment's view
+//                binding.viewPager2Main.post { binding.viewPager2Main.adapter?.notifyDataSetChanged() }
+//            } else {
+//                // Mark the page as not idle during the transition
+//                pageTransformer.setPageIdle(false)
+//            }
+//        }
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             if (currentVisibleFragmentPosition >= 0) {
@@ -79,10 +79,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // Update the Toolbar title with the location name of the selected fragment
             binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
 
-            // Show the temperature layout for the selected fragment
             val selectedFragment = fragmentAdapter.getFragmentAtPosition(position)
             if (selectedFragment is CurrentWeatherFragment) {
                 selectedFragment.showTemperatureLayout()
@@ -99,21 +97,17 @@ class MainActivity : AppCompatActivity() {
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-            // Calculate the total scroll offset for each fragment
+
             val totalScrollOffset = binding.viewPager2Main.width * position + positionOffsetPixels
 
-            // Get the current fragment at the given position
             val fragment = fragmentAdapter.getFragmentAtPosition(position)
 
-            // If the current fragment is a CurrentWeatherFragment, update its scroll position
             if (fragment is CurrentWeatherFragment) {
                 fragment.setScrollPosition(totalScrollOffset)
-                // Store the current fragment to be used for synchronization in the next scroll event
+
                 currentFragment = fragment
             } else {
-                // If the current fragment is not a CurrentWeatherFragment,
-                // check if we have a stored reference to a CurrentWeatherFragment
-                // and update its scroll position to synchronize the scrolling
+
                 currentFragment?.setScrollPosition(previousScrollPosition)
             }
 
