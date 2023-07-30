@@ -38,7 +38,7 @@ class SearchLocation : AppCompatActivity(), SearchResultAdapter.OnResultClickLis
                             if(locationList.isNullOrEmpty()){
                                 Log.d("NULL NE", "NULL Ne")
                             }
-                            searchAdapter.setResultList(ArrayList(locationList))
+                            else searchAdapter.setResultList(ArrayList(locationList))
                         }
                     }
                 } else {
