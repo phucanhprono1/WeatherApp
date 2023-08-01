@@ -2,10 +2,13 @@ package com.example.weatherapp.ui.fragment.currentweather
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.weatherapp.adapter.HourlyForecastAdapter
 import com.example.weatherapp.adapter.WeatherForecastAdapter
 import com.example.weatherapp.databinding.FragmentCurrentWeatherBinding
 import com.example.weatherapp.ui.MainActivity
@@ -39,7 +42,20 @@ class CurrentWeatherFragment : ScopedFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCurrentWeatherBinding.inflate(inflater, container, false)
+        binding.rv24hForecast.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> rv.parent.requestDisallowInterceptTouchEvent(
+                        false
+                    )
+                }
+                return false
+            }
 
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
         return binding.root
 
     }
@@ -71,6 +87,9 @@ class CurrentWeatherFragment : ScopedFragment() {
         binding.rvForecast.adapter = WeatherForecastAdapter(nonLiveForecastWeather)
         binding.rvForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         val nonLiveHourlyForecast = viewModel.hourlyForecastNonLive
+        binding.rv24hForecast.adapter = HourlyForecastAdapter(nonLiveHourlyForecast)
+        binding.rv24hForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
     }
     private val mainActivity: MainActivity?
         get() = activity as? MainActivity
@@ -105,6 +124,10 @@ class CurrentWeatherFragment : ScopedFragment() {
             binding.rvForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
         val hourlyForecast = viewModel.hourlyForecast.await()
+        hourlyForecast.observe(viewLifecycleOwner) {
+            binding.rv24hForecast.adapter = HourlyForecastAdapter(it)
+            binding.rv24hForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
 
     }
 

@@ -13,6 +13,7 @@ import com.example.weatherapp.networkdata.WeatherNetworkDataSource
 import com.example.weatherapp.networkdata.WeatherNetworkDataSourceImpl
 import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.ForecastRepositoryImpl
+import com.example.weatherapp.repository.LocationRepository
 import com.example.weatherapp.room.CurrentWeatherDao
 import com.example.weatherapp.room.ForecastDatabase
 import com.example.weatherapp.room.FutureWeatherDao
@@ -84,9 +85,10 @@ object AppModule {
         weatherNetworkDataSource: WeatherNetworkDataSource,
         sharedPreferences: SharedPreferences,
         futureWeatherDao: FutureWeatherDao,
-        hourlyForecastDao: HourlyForecastDao
+        hourlyForecastDao: HourlyForecastDao,
+        locationRepository: LocationRepository
     ): ForecastRepository {
-        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences, futureWeatherDao, hourlyForecastDao )
+        return ForecastRepositoryImpl(currentWeatherDao, weatherNetworkDataSource, sharedPreferences, futureWeatherDao, hourlyForecastDao , locationRepository)
     }
     @Provides
     fun provideCurrentWeatherViewModelFactory(

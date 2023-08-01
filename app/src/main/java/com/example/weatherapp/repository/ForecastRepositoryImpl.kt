@@ -33,7 +33,8 @@ class ForecastRepositoryImpl @Inject constructor(
     private val weatherNetworkDataSource: WeatherNetworkDataSource,
     private val sharedPreferences: SharedPreferences,
     private val futureWeatherDao: FutureWeatherDao,
-    private val hourlyForecastDao: HourlyForecastDao
+    private val hourlyForecastDao: HourlyForecastDao,
+    private val locationRepository: LocationRepository
 ):ForecastRepository {
 
     init {
