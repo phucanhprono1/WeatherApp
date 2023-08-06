@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_70sdp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/_5sdp"
+    android:layout_marginEnd="@dimen/_5sdp"
+    android:background="@drawable/background_translucent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Tommorow"
+
+        android:textSize="@dimen/_10sdp"
+        android:id="@+id/dayweek"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="8/6"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:textSize="@dimen/_9sdp"
+        android:id="@+id/date_forecast"
+        />
+    <ImageView
+        android:id="@+id/iv_icon_weather_5_day_day"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:src="@drawable/ic_cloud" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="12"
+
+        android:textSize="@dimen/_20sdp"
+        android:id="@+id/temperature_5_day_max"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="12"
+        android:layout_marginTop="@dimen/_60sdp"
+        android:textSize="@dimen/_20sdp"
+        android:id="@+id/temperature_5_day_min"/>
+    <ImageView
+        android:id="@+id/iv_icon_weather_5_day_night"
+        android:layout_width="@dimen/_24sdp"
+        android:layout_height="@dimen/_24sdp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:src="@drawable/ic_cloud" />
+
+
+    <TextView
+        android:id="@+id/tv_wind_24h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_gravity="center"
+        android:text="5.0m/s"
+
+        android:textSize="@dimen/_8sdp" />
+
+
+
+
+</LinearLayout>

@@ -6,4 +6,5 @@
     <string name="location_item_weather">Trời nắng</string>
     <string name="city_manage">Quản lý thành phố</string>
     <string name="xoa">Xóa</string>
+    <string name="detail5day">Detail 5 days</string>
 </resources>

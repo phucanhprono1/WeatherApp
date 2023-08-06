@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.fragment.currentweather
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.adapter.HourlyForecastAdapter
 import com.example.weatherapp.adapter.WeatherForecastAdapter
 import com.example.weatherapp.databinding.FragmentCurrentWeatherBinding
+import com.example.weatherapp.ui.Detail5DayActivity
 import com.example.weatherapp.ui.MainActivity
 import com.example.weatherapp.ui.fragment.ScopedFragment
 import com.github.mikephil.charting.data.Entry
@@ -56,6 +58,13 @@ class CurrentWeatherFragment : ScopedFragment() {
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         })
+        binding.rv24hForecast.layoutManager =object : LinearLayoutManager(context) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+        }
+        binding.rv24hForecast.isNestedScrollingEnabled = false
+
         return binding.root
 
     }
@@ -72,7 +81,9 @@ class CurrentWeatherFragment : ScopedFragment() {
 
         viewModel = ViewModelProvider(this,viewModelFactory).get(CurrentWeatherViewModel::class.java)
         val nonLiveCurrentWeather = viewModel.currentWeatherNonLive
-
+        binding.btn5DayForecast.setOnClickListener{
+            startActivity(Intent(requireContext(), Detail5DayActivity::class.java))
+        }
 
         bindUi()
         if(nonLiveCurrentWeather == null) return

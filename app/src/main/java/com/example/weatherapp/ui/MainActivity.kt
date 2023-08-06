@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
 import com.example.weatherapp.adapter.FragmentAdapter
+import com.example.weatherapp.adapter.ViewPager2Adapter
 import com.example.weatherapp.api.ServiceFactory
 import com.example.weatherapp.config.StaticConfig
 import com.example.weatherapp.databinding.ActivityMainBinding
@@ -39,10 +40,12 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-//    private lateinit var fragmentList : ArrayList<Fragment>
+
+    //    private lateinit var fragmentList : ArrayList<Fragment>
     private lateinit var fragmentAdapter: FragmentAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     var locationName = ""
@@ -56,6 +59,10 @@ class MainActivity : AppCompatActivity() {
     // Add a reference to the current fragment
     private var currentFragment: CurrentWeatherFragment? = null
     private var currentVisibleFragmentPosition: Int = 0
+    override fun onResume() {
+        super.onResume()
+        //check permission
+    }
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -70,10 +77,12 @@ class MainActivity : AppCompatActivity() {
 //                pageTransformer.setPageIdle(false)
 //            }
 //        }
+
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             if (currentVisibleFragmentPosition >= 0) {
-                val oldVisibleFragment = fragmentAdapter.getFragmentAtPosition(currentVisibleFragmentPosition)
+                val oldVisibleFragment =
+                    fragmentAdapter.getFragmentAtPosition(currentVisibleFragmentPosition)
                 if (oldVisibleFragment is CurrentWeatherFragment) {
                     oldVisibleFragment.hideTemperatureLayout()
                 }
@@ -92,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
 
         }
+
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
@@ -116,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -143,9 +154,8 @@ class MainActivity : AppCompatActivity() {
 //        if(sharedPreferences.getString("LOCATION_NAME", "") != "") {
         locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
         fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
-        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
-        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
-    //}
+
+        //}
 
         binding.rightMenuButton.setOnClickListener {
             showPopUpMenu(it)
@@ -158,21 +168,28 @@ class MainActivity : AppCompatActivity() {
 
         binding.viewPager2Main.adapter = fragmentAdapter
 
-        binding.viewPager2Main.adapter = fragmentAdapter
+//        binding.viewPager2Main.adapter = fragmentAdapter
         binding.viewPager2Main.setPageTransformer(pageTransformer)
         binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-
+        val locationName = mutableListOf<String>()
+        locationName.add("Hà Nội")
+        // Now, set up and attach the ViewPager2Adapter
+//        val viewPager2Adapter = ViewPager2Adapter(locationName)
+//        binding.viewPager2Main.adapter = viewPager2Adapter  // Use binding.viewPager2 instead of binding.viewPager2Main
+//
+//        // ...
 
         binding.circleIndicator.setViewPager(binding.viewPager2Main)
 
 
     }
+
     fun showPopUpMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
 
         popupMenu.menuInflater.inflate(R.menu.main_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.action_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
@@ -184,6 +201,7 @@ class MainActivity : AppCompatActivity() {
         }
         popupMenu.show()
     }
+
     private fun getLocationAndFetchLocationKey() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -204,12 +222,15 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val location = getLastKnownLocation()
                     if (location != null) {
-                        val response = ServiceFactory.createLocationApi().getLocationKey(ServiceFactory.API_KEY, "${location.latitude},${location.longitude}")
+                        val response = ServiceFactory.createLocationApi().getLocationKey(
+                            ServiceFactory.API_KEY,
+                            "${location.latitude},${location.longitude}"
+                        )
                         handleLocationResponse(response)
                     } else {
                         // Xử lý khi không lấy được vị trí
                     }
-                }catch (e: Exception) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                     // Xử lý khi gọi API bị lỗi
                 }
@@ -250,7 +271,8 @@ class MainActivity : AppCompatActivity() {
             val locationResponse = response.body()!!
             val locationKey = locationResponse.Key
             locationName = locationResponse.LocalizedName
-            sharedPreferences.edit().putString("LOCATION_NAME", locationResponse.LocalizedName).apply()
+            sharedPreferences.edit().putString("LOCATION_NAME", locationResponse.LocalizedName)
+                .apply()
 
             // Lưu Location Key vào SharedPreferences
             sharedPreferences.edit().putString("LOCATION_KEY", locationKey).apply()

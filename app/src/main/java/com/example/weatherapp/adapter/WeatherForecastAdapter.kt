@@ -106,7 +106,7 @@ class WeatherForecastAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather
         return when {
             inputDate.toLocalDate() == today -> "Today"
             inputDate.toLocalDate() == tomorrow -> "Tomorrow"
-            else -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).capitalize()
+            else -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).capitalize()
         }
     }
 }

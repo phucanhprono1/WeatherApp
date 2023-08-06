@@ -17,8 +17,6 @@ data class DailyForecast(
     val MobileLink: String,
     @Embedded(prefix = "night_")
     val Night: Night,
-    @Embedded(prefix = "wind_")
-    val Wind: Wind,
     @Embedded(prefix = "temperature_")
     val Temperature: Temperature
 )

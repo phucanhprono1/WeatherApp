@@ -18,13 +18,17 @@
         android:theme="@style/Base.Theme.WeatherApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.Detail5DayActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.DetailFiveDays"
+            android:exported="false" />
+        <activity
             android:name=".ui.add_location.search.SearchLocation"
             android:exported="false" />
         <activity
             android:name=".ui.add_location.location_list.LocationList"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".ui.AddCityActivity"
             android:exported="false" />
