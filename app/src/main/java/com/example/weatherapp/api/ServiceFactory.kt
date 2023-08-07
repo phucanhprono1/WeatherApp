@@ -7,8 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceFactory {
     private const val BASE_URL = "https://dataservice.accuweather.com/"
-    const val API_KEY = "KoTx6gUlAhoZM6aGkAsdanvbEGBtDoGW"
- //   const val API_KEY = "hGYgGOfw7KbRkutaE2or1vVnKFno1njx"
+//    const val API_KEY = "KoTx6gUlAhoZM6aGkAsdanvbEGBtDoGW"
+    const val API_KEY = "v8kAIqRlwg7TDzF4uDmRBVLQcEqrKkR1"
 
     private val okHttpClient = OkHttpClient.Builder()
                                 .build()

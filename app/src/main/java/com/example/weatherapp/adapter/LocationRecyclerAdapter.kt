@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.LocationListItemBinding
 import com.example.weatherapp.repository.LocationRepositoryImpl
+import com.example.weatherapp.response.LocationInfo
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Collections
@@ -16,11 +17,11 @@ class LocationRecyclerAdapter(
     private var listener: OnLocationLongPressListener
     )
     : RecyclerView.Adapter<LocationRecyclerAdapter.LocationViewHolder>(){
-    private var locationList = ArrayList<LocationKeyResponse>()
+    private var locationList = ArrayList<LocationInfo>()
     private var checkedItems: ArrayList<Boolean> = ArrayList()
     private var isSelectionMode = false
 
-    fun getLocationList() : ArrayList<LocationKeyResponse>{
+    fun getLocationList() : ArrayList<LocationInfo>{
         return locationList
     }
 
@@ -29,7 +30,7 @@ class LocationRecyclerAdapter(
     }
 
 
-    fun setLocationKeyResponseList(LocationKeyResponseList: List<LocationKeyResponse>){
+    fun setLocationKeyResponseList(LocationKeyResponseList: List<LocationInfo>){
         this.locationList = ArrayList(LocationKeyResponseList)
         this.checkedItems = ArrayList<Boolean>(Collections.nCopies(LocationKeyResponseList.size,
             false))
@@ -60,9 +61,9 @@ class LocationRecyclerAdapter(
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         with(holder){
             with(locationList[position]){
-                binding.locationItemName.text = this.EnglishName
-                binding.locationItemTemp.text = "30"
-                binding.locationItemWeather.text = "Trời nắng"
+                binding.locationItemName.text = this.LocationKeyResponse.EnglishName
+                binding.locationItemTemp.text = this.CurrentWeatherResponse?.Temperature?.Metric?.Value.toString()
+                binding.locationItemWeather.text = this.CurrentWeatherResponse?.WeatherText
 
                 if (isSelectionMode) {
                     binding.checkbox.visibility = View.VISIBLE

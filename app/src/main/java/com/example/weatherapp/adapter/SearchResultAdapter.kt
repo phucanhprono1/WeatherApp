@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.SearchResultListItemBinding
+import com.example.weatherapp.response.LocationInfo
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 
 class SearchResultAdapter(

@@ -3,12 +3,14 @@ package com.example.weatherapp.ui.add_location.location_list
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.adapter.LocationRecyclerAdapter
 import com.example.weatherapp.repository.LocationRepositoryImpl
+import com.example.weatherapp.response.LocationInfo
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import com.example.weatherapp.ui.add_location.search.SearchLocation
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,13 +21,13 @@ import javax.inject.Inject
 class LocationListViewModel @Inject constructor(
     var locationRepo : LocationRepositoryImpl) : ViewModel() {
 
-    private var locationLiveData = MutableLiveData<List<LocationKeyResponse>>()
+    private var locationLiveData = MutableLiveData<List<LocationInfo>>()
     private var isSelectedMode : Boolean = false
     fun getRegisteredLocation() {
 
     }
 
-    fun observeLocationLiveData() : LiveData<List<LocationKeyResponse>> {
+    fun observeLocationLiveData() : LiveData<List<LocationInfo>> {
         return locationLiveData
     }
 

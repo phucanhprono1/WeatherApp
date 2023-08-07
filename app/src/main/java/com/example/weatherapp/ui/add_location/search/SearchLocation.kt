@@ -11,6 +11,7 @@ import com.example.weatherapp.adapter.SearchResultAdapter
 import com.example.weatherapp.databinding.ActivitySearchLocationBinding
 import com.example.weatherapp.repository.LocationRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
+import com.example.weatherapp.response.LocationInfo
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -66,7 +67,9 @@ class SearchLocation : AppCompatActivity(), SearchResultAdapter.OnResultClickLis
     }
 
     override fun onResultClick(location: LocationKeyResponse) {
-        locationRepo.insertNewCity(location)
-        finish()
+        lifecycleScope.launch {
+            locationRepo.insertNewCity(location)
+            finish()
+        }
     }
 }

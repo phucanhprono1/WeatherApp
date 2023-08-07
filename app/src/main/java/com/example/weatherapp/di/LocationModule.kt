@@ -5,6 +5,7 @@ import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.room.CurrentWeatherDao
 import com.example.weatherapp.room.ForecastDatabase
 import com.example.weatherapp.room.LocationDao
+import com.example.weatherapp.room.LocationInfoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,9 +20,12 @@ object LocationModule {
     fun provideLocationDao(forecastDatabase: ForecastDatabase): LocationDao {
         return forecastDatabase.locationDao()
     }
-
     @Provides
-    fun provideLocationRepo(locationDao: LocationDao): LocationRepository {
-        return LocationRepositoryImpl(locationDao)
+    fun provideLocationRepo(locationDao: LocationDao, infoDao: LocationInfoDao): LocationRepository {
+        return LocationRepositoryImpl(locationDao,infoDao)
+    }
+    @Provides
+    fun provideLocationInfoDao(forecastDatabase: ForecastDatabase) : LocationInfoDao{
+        return forecastDatabase.locationInfoDao()
     }
 }
