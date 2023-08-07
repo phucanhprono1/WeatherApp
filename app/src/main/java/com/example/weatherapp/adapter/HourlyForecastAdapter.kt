@@ -7,44 +7,36 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
-import com.example.weatherapp.response.FivedaysForecast.DailyForecast
-import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
-import com.example.weatherapp.weatherunit.forecastweather.UnitLocalizedFiveDaysForecastWeather
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.TextStyle
-
-import java.time.temporal.ChronoUnit
+import com.example.weatherapp.response.forecast24h.Forecast24hItem
+import com.example.weatherapp.weatherunit.forecast24h.UnitLocalized24hForecast
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
-class WeatherForecastAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather>) : RecyclerView.Adapter<WeatherForecastAdapter.WeatherForecastViewHolder>() {
-    class WeatherForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class HourlyForecastAdapter(val list: List<UnitLocalized24hForecast>) : RecyclerView.Adapter<HourlyForecastAdapter.HourlyForecastViewHolder>(){
+    class HourlyForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val view = itemView
-        val iconWeather = view.findViewById<ImageView>(R.id.ivWeatherConditionRcv)
-        val tvDay = view.findViewById<TextView>(R.id.tvDayRcv)
-        val weatherCondition= view.findViewById<TextView>(R.id.tvWeatherConditionRcv)
-        val tvMinMaxTemp = view.findViewById<TextView>(R.id.tvMinMaxTempRcv)
-
+        val tvTime = view.findViewById<TextView>(R.id.tv_time_24h)
+        val tvTemp = view.findViewById<TextView>(R.id.temperature_24h)
+        val iconWeather = view.findViewById<ImageView>(R.id.iv_icon_weather_24h)
+        val tvWind = view.findViewById<TextView>(R.id.tv_wind_24h)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherForecastViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_weather_forecast, parent, false)
-        return WeatherForecastViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyForecastViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_24h_forecast, parent, false)
+        return HourlyForecastViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        if (list.size ==0) {
-            return 0
-        }
-        else
-            return 3
+        return list.size
     }
 
-    override fun onBindViewHolder(holder: WeatherForecastViewHolder, position: Int) {
-        val forecast = list.get(position)
-        when(forecast.icon_day){
+    override fun onBindViewHolder(holder: HourlyForecastViewHolder, position: Int) {
+        val hourlyforecast = list.get(position)
+        holder.tvTime.text = getTimeFromDateTime(hourlyforecast.DateTime)
+        holder.tvTemp.text = Math.round(hourlyforecast.temperature_value).toInt().toString()+ "°"
+        holder.tvWind.text = hourlyforecast.WindSpeed.toString() + "" + hourlyforecast.WindUnit
+        when(hourlyforecast.WeatherIcon){
             1-> holder.iconWeather.setImageResource(R.drawable.sunny_01)
             2-> holder.iconWeather.setImageResource(R.drawable.mostly_sunny_02)
             3-> holder.iconWeather.setImageResource(R.drawable.partly_sunny_03)
@@ -85,28 +77,21 @@ class WeatherForecastAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather
             43-> holder.iconWeather.setImageResource(R.drawable.ic_w43)
             44-> holder.iconWeather.setImageResource(R.drawable.ic_w44)
         }
-
-        holder.tvDay.text = formatDateToDayOfWeek(forecast.date)
-        holder.weatherCondition.text = forecast.iconPhrase_day
-        holder.tvMinMaxTemp.text = Math.round(forecast.minTemperature).toInt().toString() + "°" + "/" + Math.round(forecast.maxTemperature).toInt().toString() + "°"
     }
-    fun formatDateToDayOfWeek(inputDateStr: String): String {
-        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-        val inputDate = ZonedDateTime.parse(inputDateStr, formatter)
+    fun getTimeFromDateTime(dateTimeString: String): String {
+        try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+            val date = sdf.parse(dateTimeString)
+            val cal = Calendar.getInstance()
+            cal.time = date
 
-        // Lấy ngày hôm nay
-        val today = LocalDate.now()
+            val hour = cal.get(Calendar.HOUR_OF_DAY)
+            val minute = cal.get(Calendar.MINUTE)
 
-        // Lấy ngày tiếp theo (ngày mai)
-        val tomorrow = today.plusDays(1)
-
-        // Lấy ngày trong tuần
-        val dayOfWeek = inputDate.toLocalDate().dayOfWeek
-
-        return when {
-            inputDate.toLocalDate() == today -> "Today"
-            inputDate.toLocalDate() == tomorrow -> "Tomorrow"
-            else -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).capitalize()
+            return String.format("%02d:%02d", hour, minute)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ""
         }
     }
 }

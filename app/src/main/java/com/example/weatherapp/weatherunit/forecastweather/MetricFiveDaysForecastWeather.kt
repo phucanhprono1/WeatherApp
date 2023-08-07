@@ -17,5 +17,10 @@ class MetricFiveDaysForecastWeather (
     override val icon_night: Int,
     @ColumnInfo(name = "night_IconPhrase")
     override val iconPhrase_night: String,
-
+    @ColumnInfo(name = "day_wind_speed_Value")
+    override val WindSpeed: Double?,
+ //   @ColumnInfo(name = "wind_direction_Degrees")
+//    override val WindDirection: String,
+    @ColumnInfo(name = "day_wind_speed_Unit")
+    override val WindUnit: String?
     ): UnitLocalizedFiveDaysForecastWeather

@@ -3,6 +3,7 @@ package com.example.weatherapp.transformer
 
 import android.view.View
 import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
 import kotlin.math.abs
@@ -23,18 +24,14 @@ class Horizontal3DPageTransformer : ViewPager2.PageTransformer {
                     scaleY = minScale
                 }
                 position <= 1 -> { // Page on the screen or entering/leaving the screen
-                    alpha = (minAlpha + (1 - minAlpha) * (1 - abs(position)))
-                    scaleX = (minScale + (1 - minScale) * (1 - abs(position)))
-                    scaleY = (minScale + (1 - minScale) * (1 - abs(position)))
-                    translationZ = -abs(position) // Gradually reduce depth translation for a slight 3D effect
+
+                     // Gradually reduce depth translation for a slight 3D effect
 
                     findViewById<View>(R.id.linearTemp)?.translationX = translationX
                     findViewById<View>(R.id.linearTemp)?.rotationY = 90f * position // Adjust the rotation based on the position
 
                     // Calculate the inner scroll position for the fragment's ScrollView
-                    val scrollView = findViewById<ScrollView>(R.id.scrollView)
-                    val innerScrollOffset = scrollView.getChildAt(0).width * position
-                    scrollView.scrollTo(-innerScrollOffset.toInt(), 0)
+
                 }
                 else -> { // Page to the right of the screen
                     alpha = minAlpha

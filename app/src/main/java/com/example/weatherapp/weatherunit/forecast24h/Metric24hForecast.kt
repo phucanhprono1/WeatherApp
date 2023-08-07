@@ -14,5 +14,11 @@ class Metric24hForecast (
     @ColumnInfo(name = "WeatherIcon")
     override val WeatherIcon: Int,
     @ColumnInfo(name = "IconPhrase")
-    override val IconPhrase: String
+    override val IconPhrase: String,
+    @ColumnInfo(name = "wind_speed_Value")
+    override val WindSpeed: Double?,
+//    @ColumnInfo(name = "wind_direction_Degrees")
+//    override val WindDirection: String,
+    @ColumnInfo(name = "wind_speed_Unit")
+    override val WindUnit: String?
 ):UnitLocalized24hForecast

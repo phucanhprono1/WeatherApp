@@ -4,7 +4,9 @@ import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponse
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponseItem
 import com.example.weatherapp.response.forecast24h.Forecast24h
+
 import kotlinx.coroutines.Deferred
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,8 +25,9 @@ interface WeatherApi {
         @Path("locationKey") locationKey: String,
         @Query("apikey") apiKey: String,
         @Query("language") language: String,
+        @Query("details") details: Boolean,
         @Query("metric") metric: Boolean
-        ): FiveDaysForecast
+        ): Response<FiveDaysForecast>
     @GET("/forecasts/v1/hourly/12hour/{locationKey}")
     suspend fun get24hourForecast(
         @Path("locationKey") locationKey: String,
@@ -32,5 +35,5 @@ interface WeatherApi {
         @Query("language") language: String,
         @Query("details") details: Boolean,
         @Query("metric") metric: Boolean
-    ): Forecast24h
+    ): Response<Forecast24h>
 }

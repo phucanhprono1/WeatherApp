@@ -16,12 +16,12 @@ import org.threeten.bp.LocalDateTime
 interface HourlyForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(list: List<Forecast24hItem>)
-    @Query("select * from forecast24h_table where datetime(DateTime) >= datetime(:startDate)")
+    @Query("select * from forecast24h_table where DateTime >= :startDate")
     fun getHourlyForecastMetric(startDate: LocalDateTime): LiveData< List<Metric24hForecast>>
-    @Query("select * from forecast24h_table where datetime(DateTime) >= datetime(:startDate)")
+    @Query("select * from forecast24h_table where DateTime >= :startDate")
     fun getHourlyForecastMetricNonLive(startDate: LocalDateTime): List<Metric24hForecast>
-    @Query("select count(id) from forecast24h_table where datetime(DateTime) >= datetime(:startDate)")
+    @Query("select count(id) from forecast24h_table where DateTime >= :startDate")
     fun countHourlyForecast(startDate: LocalDateTime): Int
-    @Query("delete from forecast24h_table where datetime(DateTime) < datetime(:firstDateToKeep)")
+    @Query("delete from forecast24h_table where DateTime < :firstDateToKeep")
     fun deleteOldEntries(firstDateToKeep: LocalDateTime)
 }

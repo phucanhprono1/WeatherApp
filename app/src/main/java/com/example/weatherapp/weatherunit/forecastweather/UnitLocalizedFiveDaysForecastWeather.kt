@@ -8,4 +8,7 @@ interface UnitLocalizedFiveDaysForecastWeather {
     val iconPhrase_day: String
     val icon_night: Int
     val iconPhrase_night: String
+    val WindSpeed: Double?
+//    val WindDirection: String
+    val WindUnit: String?
 }

@@ -41,10 +41,12 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
         try {
             val fetchedFutureWeather = GlobalScope.async {
                 serviceFactory.createWeatherApi()
-                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language,true)
+                    .get5dayForecast(locationKey,serviceFactory.API_KEY,language,true,true)
             } .await()
+        if(fetchedFutureWeather.isSuccessful && fetchedFutureWeather.body()!=null){
+            _downloadedFutureWeather.postValue(fetchedFutureWeather.body())
+        }
 
-            _downloadedFutureWeather.postValue(fetchedFutureWeather)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -60,8 +62,8 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
                 serviceFactory.createWeatherApi()
                     .get24hourForecast(locationKey,serviceFactory.API_KEY,language,true,true)
             } .await()
-
-            _downloadedHourlyForecast.postValue(fetchedHourlyForecast)
+            if (fetchedHourlyForecast.isSuccessful && fetchedHourlyForecast.body()!=null)
+                _downloadedHourlyForecast.postValue(fetchedHourlyForecast.body())
         }catch (e:Exception){
             e.printStackTrace()
         }
