@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
     android:id="@+id/scrollView"
+    android:fillViewport="true"
     tools:context=".ui.fragment.currentweather.CurrentWeatherFragment">
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +30,7 @@
                 <TextView
                     android:id="@+id/tvTemp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="156dp"
                     android:text="30"
                     android:textAlignment="center"
                     android:textColor="@color/white"
@@ -64,6 +65,7 @@
                     android:textSize="@dimen/_14sdp" />
 
                 <TextView
+                    android:id="@+id/minmaxToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvTemp"
@@ -120,6 +122,7 @@
                         android:textSize="@dimen/_12sdp" />
 
                     <TextView
+                        android:id="@+id/tvMoreDetails5dayForecast"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -187,8 +190,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_100sdp"
                 android:id="@+id/rv24hForecast"
-                android:nestedScrollingEnabled="false"
-                android:focusableInTouchMode="true"/>
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

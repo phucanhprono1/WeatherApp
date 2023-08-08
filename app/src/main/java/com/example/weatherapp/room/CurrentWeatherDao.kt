@@ -18,8 +18,17 @@ interface CurrentWeatherDao {
     fun getWeatherMetric(): LiveData<MetricCurrentWeather>
     @Query("select * from current_weather where id = $CURRENT_WEATHER_ID")
     fun getWeatherImperial(): LiveData<ImperialCurrentWeather>
+    @Query("select * from current_weather where id = :locationKey")
+    fun getWeatherMetricByLocationKey(locationKey:String): LiveData<MetricCurrentWeather>
+    @Query("select * from current_weather where id = :locationKey")
+    fun getWeatherImperialByLocationKey(locationKey:String): LiveData<ImperialCurrentWeather>
+
     @Query("select * from current_weather where id = $CURRENT_WEATHER_ID")
     fun getWeatherMetricNonLive(): MetricCurrentWeather
     @Query("select * from current_weather where id = $CURRENT_WEATHER_ID")
     fun getWeatherImperialNonLive(): ImperialCurrentWeather
+    @Query("select * from current_weather where id = :locationKey")
+    fun getWeatherMetricByLocationKeyNonLive(locationKey:String): MetricCurrentWeather
+    @Query("select * from current_weather where id = :locationKey")
+    fun getWeatherImperialByLocationKeyNonLive(locationKey:String): ImperialCurrentWeather
 }

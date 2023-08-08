@@ -10,7 +10,9 @@ import org.threeten.bp.LocalDateTime
 
 interface ForecastRepository {
     suspend fun getCurrentWeather(metric: Boolean): LiveData<out UnitLocalizedCurrentWeather>
+    suspend fun getCurrentWeatherByLocationKey(locationKey: String,metric: Boolean): LiveData<out UnitLocalizedCurrentWeather>
     fun getWeatherNonLive(metric: Boolean): UnitLocalizedCurrentWeather
+    fun getWeatherNonLiveByLocationKey(locationKey: String,metric: Boolean): UnitLocalizedCurrentWeather
     suspend fun getFutureWeatherList(startDate: LocalDateTime, metric: Boolean): LiveData<out List< UnitLocalizedFiveDaysForecastWeather>>
     fun get5dayForecastNonLive(startDate: LocalDateTime, metric: Boolean):List<UnitLocalizedFiveDaysForecastWeather>
     suspend fun getHourlyForecastList(startDate: LocalDateTime, metric: Boolean): LiveData<out List<UnitLocalized24hForecast>>

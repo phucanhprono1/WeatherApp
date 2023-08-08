@@ -1,6 +1,7 @@
 package com.example.weatherapp.ui.fragment.currentweather
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -25,10 +26,10 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class CurrentWeatherFragment : ScopedFragment() {
+class CurrentWeatherFragment(val locationKey:String) : ScopedFragment() {
 
     companion object {
-        fun newInstance() = CurrentWeatherFragment()
+        fun newInstance() = CurrentWeatherFragment(locationKey = "215854")
     }
 //    @Inject
 //    lateinit var forecastRepository: ForecastRepository
@@ -38,19 +39,27 @@ class CurrentWeatherFragment : ScopedFragment() {
     lateinit var viewModelFactory: CurrentWeatherViewModelFactory
     private lateinit var viewModel: CurrentWeatherViewModel
     private lateinit var binding: FragmentCurrentWeatherBinding
-
+    private val mainActivity: MainActivity?
+        get() = activity as? MainActivity
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCurrentWeatherBinding.inflate(inflater, container, false)
+
+
         binding.rv24hForecast.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            private var isScrollingHorizontally = false
+
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                when (e.actionMasked) {
-                    MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> rv.parent.requestDisallowInterceptTouchEvent(
-                        false
-                    )
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        isScrollingHorizontally = false
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        isScrollingHorizontally = rv.canScrollHorizontally(RecyclerView.FOCUS_FORWARD)
+                        mainActivity?.binding?.viewPager2Main?.isUserInputEnabled = !isScrollingHorizontally
+                    }
                 }
                 return false
             }
@@ -58,12 +67,11 @@ class CurrentWeatherFragment : ScopedFragment() {
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         })
-        binding.rv24hForecast.layoutManager =object : LinearLayoutManager(context) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
+
+        binding.rv24hForecast.setHasFixedSize(true)
         binding.rv24hForecast.isNestedScrollingEnabled = false
+        binding.rv24hForecast.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
 
         return binding.root
 
@@ -80,7 +88,8 @@ class CurrentWeatherFragment : ScopedFragment() {
 
 
         viewModel = ViewModelProvider(this,viewModelFactory).get(CurrentWeatherViewModel::class.java)
-        val nonLiveCurrentWeather = viewModel.currentWeatherNonLive
+        viewModel.key = locationKey
+        val nonLiveCurrentWeather = viewModel.currentWeatherNonLiveByLocationKey
         binding.btn5DayForecast.setOnClickListener{
             startActivity(Intent(requireContext(), Detail5DayActivity::class.java))
         }
@@ -88,6 +97,7 @@ class CurrentWeatherFragment : ScopedFragment() {
         bindUi()
         if(nonLiveCurrentWeather == null) return
         binding.tvTemp.text = Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
+
         binding.tvUnitDegree.text = "°${nonLiveCurrentWeather.Unit}"
         binding.weatherCondition.text = nonLiveCurrentWeather.WeatherText
         binding.textHumidity.text = "${nonLiveCurrentWeather.RelativeHumidity}%"
@@ -95,6 +105,10 @@ class CurrentWeatherFragment : ScopedFragment() {
         binding.textUV.text = nonLiveCurrentWeather.UVIndex.toString()
         binding.textPressure.text = "${nonLiveCurrentWeather.pressure}${nonLiveCurrentWeather.pressureUnit}"
         val nonLiveForecastWeather = viewModel.forecastWeatherNonLive
+        binding.minmaxToday.text = "${Math.round(nonLiveForecastWeather[0].minTemperature)}°/${Math.round(nonLiveForecastWeather[0].maxTemperature)}°"
+        binding.tvMoreDetails5dayForecast.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(nonLiveForecastWeather[0].link) ))
+        }
         binding.rvForecast.adapter = WeatherForecastAdapter(nonLiveForecastWeather)
         binding.rvForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         val nonLiveHourlyForecast = viewModel.hourlyForecastNonLive
@@ -102,8 +116,7 @@ class CurrentWeatherFragment : ScopedFragment() {
         binding.rv24hForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
     }
-    private val mainActivity: MainActivity?
-        get() = activity as? MainActivity
+
 
     // Method to set the scroll position for the fragment's ScrollView
     fun setScrollPosition(scrollX: Int) {
@@ -111,7 +124,7 @@ class CurrentWeatherFragment : ScopedFragment() {
     }
 
     private fun bindUi()= launch {
-        val currentweather = viewModel.currentWeather.await()
+        val currentweather = viewModel.currentWeatherByLocationKey.await()
         currentweather.observe(viewLifecycleOwner) {
 
             if (it == null) return@observe

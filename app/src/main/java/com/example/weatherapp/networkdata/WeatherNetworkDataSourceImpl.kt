@@ -19,20 +19,32 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
     private val serviceFactory:ServiceFactory,
 
 ): WeatherNetworkDataSource {
-    private val _downloadedCurrentWeather = MutableLiveData<CurrentWeatherResponse>()
-    override val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
+    private val _downloadedCurrentWeather = MutableLiveData<List<CurrentWeatherResponse>>()
+    override val downloadedCurrentWeather: LiveData<List<CurrentWeatherResponse>>
         get() = _downloadedCurrentWeather
 
-    override suspend fun fetchCurrentWeather(locationKey: String, language: String) {
+    override suspend fun fetchCurrentWeather(locationKey: List<String>, language: String) {
         try {
-            val fetchedCurrentWeather = serviceFactory.createWeatherApi()
-                .getCurrentWeather(locationKey,serviceFactory.API_KEY,language,true)
-                .await()
-            _downloadedCurrentWeather.postValue(fetchedCurrentWeather)
-        }catch (e:Exception){
+            val fetchlist = mutableListOf<CurrentWeatherResponse>()
+            for (i in locationKey.indices) {
+                try {
+                    val fetchedCurrentWeather = GlobalScope.async {
+                        serviceFactory.createWeatherApi()
+                            .getCurrentWeather(locationKey[i], serviceFactory.API_KEY, language, true)
+                    }.await()
+                    if (fetchedCurrentWeather.isSuccessful && fetchedCurrentWeather.body() != null) {
+                        fetchlist.add(fetchedCurrentWeather.body()!!)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            _downloadedCurrentWeather.postValue(fetchlist)
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
     private val _downloadedFutureWeather = MutableLiveData<FiveDaysForecast>()
     override val downloadedFutureWeather: LiveData<FiveDaysForecast>
         get() = _downloadedFutureWeather

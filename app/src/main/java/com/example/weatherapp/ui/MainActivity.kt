@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+
 
 package com.example.weatherapp.ui
 
@@ -43,7 +43,7 @@ import kotlin.coroutines.suspendCoroutine
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    public lateinit var binding: ActivityMainBinding
 
     //    private lateinit var fragmentList : ArrayList<Fragment>
     private lateinit var fragmentAdapter: FragmentAdapter
@@ -66,18 +66,6 @@ class MainActivity : AppCompatActivity() {
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
-//        override fun onPageScrollStateChanged(state: Int) {
-//            if (state == ViewPager2.SCROLL_STATE_IDLE) {
-//                // Mark the page as idle in the Horizontal3DPageTransformer
-//                pageTransformer.setPageIdle(true)
-//                // Force the transformPage method to be called to update the current fragment's view
-//                binding.viewPager2Main.post { binding.viewPager2Main.adapter?.notifyDataSetChanged() }
-//            } else {
-//                // Mark the page as not idle during the transition
-//                pageTransformer.setPageIdle(false)
-//            }
-//        }
-
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             if (currentVisibleFragmentPosition >= 0) {
@@ -101,7 +89,6 @@ class MainActivity : AppCompatActivity() {
             binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
 
         }
-
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
@@ -124,7 +111,6 @@ class MainActivity : AppCompatActivity() {
             // Store the scroll position for synchronization in the next scroll event
             previousScrollPosition = totalScrollOffset
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,7 +139,11 @@ class MainActivity : AppCompatActivity() {
         fragmentAdapter = FragmentAdapter(this)
 //        if(sharedPreferences.getString("LOCATION_NAME", "") != "") {
         locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
-        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
+        sharedPreferences.getString("LOCATION_KEY", "")?.let {
+            fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationName)
+        }
+
+//        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
 
         //}
 
@@ -171,6 +161,7 @@ class MainActivity : AppCompatActivity() {
 //        binding.viewPager2Main.adapter = fragmentAdapter
         binding.viewPager2Main.setPageTransformer(pageTransformer)
         binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+
         val locationName = mutableListOf<String>()
         locationName.add("Hà Nội")
         // Now, set up and attach the ViewPager2Adapter

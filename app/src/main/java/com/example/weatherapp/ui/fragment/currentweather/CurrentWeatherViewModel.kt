@@ -29,10 +29,15 @@ class CurrentWeatherViewModel  @Inject constructor(
     lifecycleOwner: LifecycleOwner,
     private val forecastRepository: ForecastRepository
 ) : WeatherViewModel(forecastRepository,context, lifecycleOwner) {
-
+    var key:String = ""
+    val currentWeatherByLocationKey by lazyDeferred {
+        forecastRepository.getCurrentWeatherByLocationKey(key,true)
+    }
     val currentWeatherNonLive = forecastRepository.getWeatherNonLive(true)
+    val currentWeatherNonLiveByLocationKey = forecastRepository.getWeatherNonLiveByLocationKey(key,true)
     val forecastWeatherNonLive = forecastRepository.get5dayForecastNonLive(LocalDateTime.now(),true)
     val hourlyForecastNonLive = forecastRepository.getHourlyForecastNonLive(LocalDateTime.now(),true)
+
     val currentWeather by eagerDeferred {
         forecastRepository.getCurrentWeather(true)
     }

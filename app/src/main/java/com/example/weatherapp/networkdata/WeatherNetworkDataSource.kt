@@ -7,8 +7,8 @@ import com.example.weatherapp.response.currentweather.CurrentWeatherResponse
 import com.example.weatherapp.response.forecast24h.Forecast24h
 
 interface WeatherNetworkDataSource {
-    val downloadedCurrentWeather: LiveData<CurrentWeatherResponse>
-    suspend fun fetchCurrentWeather(locationKey: String,language:String)
+    val downloadedCurrentWeather: LiveData<List<CurrentWeatherResponse>>
+    suspend fun fetchCurrentWeather(locationKey: List<String>,language:String)
     val downloadedFutureWeather: LiveData<FiveDaysForecast>
     suspend fun fetchFutureWeather(locationKey: String,language:String)
     val downloadedHourlyForecast: LiveData<Forecast24h>

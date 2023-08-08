@@ -25,9 +25,6 @@ data class CurrentWeatherResponseItem(
     val RelativeHumidity: Int,
     val UVIndex: Int,
     val UVIndexText: String,
-
-
-
     ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = CURRENT_WEATHER_ID
