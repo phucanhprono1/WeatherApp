@@ -28,4 +28,8 @@ class FragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter
     fun getLocationNameAtPosition(position: Int): String {
         return locationNames[position]
     }
+    fun clearFragments() {
+        fragmentList.clear()
+        locationNames.clear()
+    }
 }

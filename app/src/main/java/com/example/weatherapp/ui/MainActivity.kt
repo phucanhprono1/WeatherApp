@@ -25,6 +25,7 @@ import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
 
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
+import com.example.weatherapp.room.LocationDao
 import com.example.weatherapp.transformer.Horizontal3DPageTransformer
 import com.example.weatherapp.transformer.LinearTemp3DPageTransformer
 import com.example.weatherapp.ui.add_location.location_list.LocationList
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    lateinit var locationDao: LocationDao
     val pageTransformer = Horizontal3DPageTransformer()
 
     private var previousScrollPosition = 0
@@ -59,9 +62,42 @@ class MainActivity : AppCompatActivity() {
     // Add a reference to the current fragment
     private var currentFragment: CurrentWeatherFragment? = null
     private var currentVisibleFragmentPosition: Int = 0
-    override fun onResume() {
-        super.onResume()
-        //check permission
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocationAndFetchLocationKey()
+                refreshFragments()
+            } else {
+                // Handle permission denied
+            }
+        }
+    }
+
+    private fun refreshFragments() {
+        fragmentAdapter.clearFragments() // Clear existing fragments
+        locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
+
+        // Add the current location fragment
+        sharedPreferences.getString("LOCATION_KEY", "")?.let {
+            fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationName)
+        }
+
+        // Add fragments for all locations from locationDao
+        for (location in locationDao.getAllLocation()) {
+            location.Key?.let {
+                fragmentAdapter.addFragment(CurrentWeatherFragment(it), location.LocalizedName)
+            }
+        }
+
+        fragmentAdapter.notifyDataSetChanged() // Notify the adapter about the data change
+        // Restore the previous selected fragment's position
+        binding.viewPager2Main.currentItem = currentVisibleFragmentPosition
     }
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
@@ -142,11 +178,11 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.getString("LOCATION_KEY", "")?.let {
             fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationName)
         }
-
-//        fragmentAdapter.addFragment(CurrentWeatherFragment(), locationName)
-
-        //}
-
+        for (i in 0 until locationDao.getAllLocation().size) {
+            locationDao.getAllLocation()[i].Key?.let {
+                fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationDao.getAllLocation()[i].LocalizedName)
+            }
+        }
         binding.rightMenuButton.setOnClickListener {
             showPopUpMenu(it)
         }
@@ -157,24 +193,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.viewPager2Main.adapter = fragmentAdapter
-
-//        binding.viewPager2Main.adapter = fragmentAdapter
         binding.viewPager2Main.setPageTransformer(pageTransformer)
         binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-
-        val locationName = mutableListOf<String>()
-        locationName.add("Hà Nội")
-        // Now, set up and attach the ViewPager2Adapter
-//        val viewPager2Adapter = ViewPager2Adapter(locationName)
-//        binding.viewPager2Main.adapter = viewPager2Adapter  // Use binding.viewPager2 instead of binding.viewPager2Main
-//
-//        // ...
-
         binding.circleIndicator.setViewPager(binding.viewPager2Main)
 
+    }
+    override fun onResume() {
+        super.onResume()
+        //check permission
+        if (ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            getLocationAndFetchLocationKey()
+            refreshFragments()
+        }
 
     }
-
     fun showPopUpMenu(view: View) {
         val popupMenu = PopupMenu(this, view)
 

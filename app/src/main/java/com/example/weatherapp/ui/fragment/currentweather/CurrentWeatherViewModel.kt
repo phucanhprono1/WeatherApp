@@ -33,20 +33,18 @@ class CurrentWeatherViewModel  @Inject constructor(
     val currentWeatherByLocationKey by lazyDeferred {
         forecastRepository.getCurrentWeatherByLocationKey(key,true)
     }
-    val currentWeatherNonLive = forecastRepository.getWeatherNonLive(true)
+    //val currentWeatherNonLive = forecastRepository.getWeatherNonLive(true)
     val currentWeatherNonLiveByLocationKey = forecastRepository.getWeatherNonLiveByLocationKey(key,true)
     val forecastWeatherNonLive = forecastRepository.get5dayForecastNonLive(LocalDateTime.now(),true)
     val hourlyForecastNonLive = forecastRepository.getHourlyForecastNonLive(LocalDateTime.now(),true)
-
-    val currentWeather by eagerDeferred {
-        forecastRepository.getCurrentWeather(true)
-    }
+//
+//    val currentWeather by eagerDeferred {
+//        forecastRepository.getCurrentWeather(true)
+//    }
     val forecastWeather by lazyDeferred {
         forecastRepository.getFutureWeatherList(LocalDateTime.now(),true)
     }
     val hourlyForecast by lazyDeferred {
         forecastRepository.getHourlyForecastList(LocalDateTime.now(),true)
     }
-    val temperatureData = arrayOf(89f, 91f, 93f, 95f, 96f, 97f, 99f, 98f, 96f, 93f, 91f, 88f)
-
 }

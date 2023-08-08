@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.adapter.HourlyForecastAdapter
 import com.example.weatherapp.adapter.WeatherForecastAdapter
+import com.example.weatherapp.config.StaticConfig.Companion.locationKey
 import com.example.weatherapp.databinding.FragmentCurrentWeatherBinding
 import com.example.weatherapp.ui.Detail5DayActivity
 import com.example.weatherapp.ui.MainActivity
@@ -29,12 +30,8 @@ import javax.inject.Inject
 class CurrentWeatherFragment(val locationKey:String) : ScopedFragment() {
 
     companion object {
-        fun newInstance() = CurrentWeatherFragment(locationKey = "215854")
+        fun newInstance() = CurrentWeatherFragment(locationKey = locationKey)
     }
-//    @Inject
-//    lateinit var forecastRepository: ForecastRepository
-//    @Inject
-//    lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var viewModelFactory: CurrentWeatherViewModelFactory
     private lateinit var viewModel: CurrentWeatherViewModel
@@ -94,16 +91,16 @@ class CurrentWeatherFragment(val locationKey:String) : ScopedFragment() {
             startActivity(Intent(requireContext(), Detail5DayActivity::class.java))
         }
 
-        bindUi()
-        if(nonLiveCurrentWeather == null) return
-        binding.tvTemp.text = Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
 
-        binding.tvUnitDegree.text = "°${nonLiveCurrentWeather.Unit}"
-        binding.weatherCondition.text = nonLiveCurrentWeather.WeatherText
-        binding.textHumidity.text = "${nonLiveCurrentWeather.RelativeHumidity}%"
-        binding.textRealFeel.text = "${nonLiveCurrentWeather.RealFeelTemperature}°${nonLiveCurrentWeather.Unit}"
-        binding.textUV.text = nonLiveCurrentWeather.UVIndex.toString()
-        binding.textPressure.text = "${nonLiveCurrentWeather.pressure}${nonLiveCurrentWeather.pressureUnit}"
+        if (nonLiveCurrentWeather != null) {
+            binding.tvTemp.text = Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
+            binding.tvUnitDegree.text = "°${nonLiveCurrentWeather.Unit}"
+            binding.weatherCondition.text = nonLiveCurrentWeather.WeatherText
+            binding.textHumidity.text = "${nonLiveCurrentWeather.RelativeHumidity}%"
+            binding.textRealFeel.text = "${nonLiveCurrentWeather.RealFeelTemperature}°${nonLiveCurrentWeather.Unit}"
+            binding.textUV.text = nonLiveCurrentWeather.UVIndex.toString()
+            binding.textPressure.text = "${nonLiveCurrentWeather.pressure}${nonLiveCurrentWeather.pressureUnit}"
+        }
         val nonLiveForecastWeather = viewModel.forecastWeatherNonLive
         binding.minmaxToday.text = "${Math.round(nonLiveForecastWeather[0].minTemperature)}°/${Math.round(nonLiveForecastWeather[0].maxTemperature)}°"
         binding.tvMoreDetails5dayForecast.setOnClickListener {
@@ -114,7 +111,7 @@ class CurrentWeatherFragment(val locationKey:String) : ScopedFragment() {
         val nonLiveHourlyForecast = viewModel.hourlyForecastNonLive
         binding.rv24hForecast.adapter = HourlyForecastAdapter(nonLiveHourlyForecast)
         binding.rv24hForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
+        bindUi()
     }
 
 
@@ -144,6 +141,7 @@ class CurrentWeatherFragment(val locationKey:String) : ScopedFragment() {
 
         val forecastweather = viewModel.forecastWeather.await()
         forecastweather.observe(viewLifecycleOwner) {
+            binding.minmaxToday.text = "${Math.round(it[0].minTemperature)}°/${Math.round(it[0].maxTemperature)}°"
             binding.rvForecast.adapter = WeatherForecastAdapter(it)
             binding.rvForecast.layoutManager =LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
