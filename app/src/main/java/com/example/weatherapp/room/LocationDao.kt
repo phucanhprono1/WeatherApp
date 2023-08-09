@@ -1,5 +1,6 @@
 package com.example.weatherapp.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -19,5 +20,7 @@ interface LocationDao {
 
     @Query("select * FROM location_key")
     fun getAllLocation(): List<LocationKeyResponse>
+    @Query("select * FROM location_key")
+    fun getAllLocationLive(): LiveData<List<LocationKeyResponse>>
 
 }

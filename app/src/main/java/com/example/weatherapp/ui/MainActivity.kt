@@ -22,6 +22,8 @@ import com.example.weatherapp.adapter.ViewPager2Adapter
 import com.example.weatherapp.api.ServiceFactory
 import com.example.weatherapp.config.StaticConfig
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.provider.KeyName
+import com.example.weatherapp.repository.LocationRepository
 import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
 
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
@@ -55,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var locationDao: LocationDao
+    @Inject
+    lateinit var locationRepository: LocationRepository
     val pageTransformer = Horizontal3DPageTransformer()
 
     private var previousScrollPosition = 0
@@ -79,24 +83,56 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshFragments() {
-        fragmentAdapter.clearFragments() // Clear existing fragments
-        locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
-
-        // Add the current location fragment
-        sharedPreferences.getString("LOCATION_KEY", "")?.let {
-            fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationName)
+    override fun onRestart() {
+        super.onRestart()
+        val keyNameList = ArrayList<KeyName>()
+        var keyName: KeyName? = null
+        val name = sharedPreferences.getString("LOCATION_NAME", "")
+        val key = sharedPreferences.getString("LOCATION_KEY", "")
+        if (name != null && key != null && key!="0" && key!="") {
+            keyName = KeyName(key, name)
+            keyNameList.add(keyName)
         }
 
-        // Add fragments for all locations from locationDao
-        for (location in locationDao.getAllLocation()) {
-            location.Key?.let {
-                fragmentAdapter.addFragment(CurrentWeatherFragment(it), location.LocalizedName)
+
+
+        locationRepository.getAllCity().let { locations ->
+            for (location in locations) {
+                val keyName = KeyName(location.Key, location.LocalizedName)
+                keyNameList.add(keyName)
             }
+
+        }
+        fragmentAdapter.updateDataList(keyNameList)
+    }
+
+    private fun refreshFragments() {
+        // Refresh the fragments
+        // Retrieve the location keys from SharedPreferences and locationRepository
+        val keyNameList = ArrayList<KeyName>()
+        var keyName: KeyName? = null
+        val name = sharedPreferences.getString("LOCATION_NAME", "")
+        val key = sharedPreferences.getString("LOCATION_KEY", "")
+        if (name != null && key != null) {
+            keyName = KeyName(key, name)
+            keyNameList.add(keyName)
         }
 
-        fragmentAdapter.notifyDataSetChanged() // Notify the adapter about the data change
-        // Restore the previous selected fragment's position
+
+
+        locationRepository.getAllCity().let { locations ->
+            for (location in locations) {
+                val keyName = KeyName(location.Key, location.LocalizedName)
+                keyNameList.add(keyName)
+            }
+
+        }
+        fragmentAdapter = FragmentAdapter(this, keyNameList)
+        binding.viewPager2Main.adapter = fragmentAdapter
+        binding.viewPager2Main.setPageTransformer(pageTransformer)
+        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+        binding.circleIndicator.setViewPager(binding.viewPager2Main)
+        // Optionally, restore the previous selected fragment's position
         binding.viewPager2Main.currentItem = currentVisibleFragmentPosition
     }
 
@@ -172,17 +208,31 @@ class MainActivity : AppCompatActivity() {
         } else {
             getLocationAndFetchLocationKey()
         }
-        fragmentAdapter = FragmentAdapter(this)
-//        if(sharedPreferences.getString("LOCATION_NAME", "") != "") {
-        locationName = sharedPreferences.getString("LOCATION_NAME", "")!!
-        sharedPreferences.getString("LOCATION_KEY", "")?.let {
-            fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationName)
+
+        val keyNameList = ArrayList<KeyName>()
+        var keyName: KeyName? = null
+        val name = sharedPreferences.getString("LOCATION_NAME", "")
+        val key = sharedPreferences.getString("LOCATION_KEY", "")
+        if (name != null && key != null) {
+            keyName = KeyName(key, name)
+            keyNameList.add(keyName)
         }
-        for (i in 0 until locationDao.getAllLocation().size) {
-            locationDao.getAllLocation()[i].Key?.let {
-                fragmentAdapter.addFragment(CurrentWeatherFragment(it), locationDao.getAllLocation()[i].LocalizedName)
+
+
+        locationRepository.getAllCity().let { locations ->
+            for (location in locations) {
+                val keyName = KeyName(location.Key, location.LocalizedName)
+                keyNameList.add(keyName)
             }
+
         }
+        fragmentAdapter = FragmentAdapter(this, keyNameList)
+        fragmentAdapter.updateDataList(keyNameList)
+        binding.viewPager2Main.adapter = fragmentAdapter
+        binding.viewPager2Main.setPageTransformer(pageTransformer)
+        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+        binding.circleIndicator.setViewPager(binding.viewPager2Main)
+
         binding.rightMenuButton.setOnClickListener {
             showPopUpMenu(it)
         }
@@ -192,10 +242,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(addIntent)
         }
 
-        binding.viewPager2Main.adapter = fragmentAdapter
-        binding.viewPager2Main.setPageTransformer(pageTransformer)
-        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-        binding.circleIndicator.setViewPager(binding.viewPager2Main)
 
     }
     override fun onResume() {
@@ -213,7 +259,9 @@ class MainActivity : AppCompatActivity() {
             )
         } else {
             getLocationAndFetchLocationKey()
-            refreshFragments()
+            fragmentAdapter.notifyDataSetChanged()
+            binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+            binding.circleIndicator.setViewPager(binding.viewPager2Main)
         }
 
     }

@@ -1,6 +1,7 @@
 package com.example.weatherapp.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.example.weatherapp.api.ServiceFactory
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import com.example.weatherapp.room.LocationDao
@@ -32,6 +33,10 @@ class LocationRepositoryImpl @Inject constructor(
 
     override fun getAllCity() : List<LocationKeyResponse>{
         return locationDao.getAllLocation()
+    }
+
+    override fun getAllCityLive(): LiveData<List<LocationKeyResponse>> {
+        return locationDao.getAllLocationLive()
     }
 
 

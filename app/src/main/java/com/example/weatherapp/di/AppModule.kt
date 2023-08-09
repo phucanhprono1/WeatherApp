@@ -44,7 +44,7 @@ object AppModule {
     @Provides
     @FragmentScoped
     fun provideCurrentWeatherFragment(): CurrentWeatherFragment {
-        return CurrentWeatherFragment.newInstance()
+        return CurrentWeatherFragment.newInstance("215854")
     }
     @Provides
     fun provideSharedPreferences(context: Context): SharedPreferences {
@@ -58,7 +58,7 @@ object AppModule {
     fun provideForecastDatabase(context: Context): ForecastDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
-            ForecastDatabase::class.java, "accuweath.db"
+            ForecastDatabase::class.java, "accuweathe.db"
         ).allowMainThreadQueries()
             .build()
     }

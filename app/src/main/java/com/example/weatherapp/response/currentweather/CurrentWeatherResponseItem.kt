@@ -27,5 +27,5 @@ data class CurrentWeatherResponseItem(
     val UVIndexText: String,
     ){
     @PrimaryKey(autoGenerate = false)
-    var id: Int = CURRENT_WEATHER_ID
+    var id: Int? = null
 }
