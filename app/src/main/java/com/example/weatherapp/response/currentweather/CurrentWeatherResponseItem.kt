@@ -3,6 +3,7 @@ package com.example.weatherapp.response.currentweather
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import javax.annotation.Nonnull
 
 
 const val CURRENT_WEATHER_ID = 0
@@ -30,5 +31,6 @@ data class CurrentWeatherResponseItem(
     val Wind: Wind
     ){
     @PrimaryKey(autoGenerate = false)
-    var id: Int? = null
+    @Nonnull
+    var id: String=""
 }

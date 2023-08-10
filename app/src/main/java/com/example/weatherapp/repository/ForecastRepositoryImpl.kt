@@ -69,11 +69,11 @@ class ForecastRepositoryImpl @Inject constructor(
             for(i in 0..fetchedWeather.size-1){
                 if (i==0){
                     sharedPreferences.getString("LOCATION_KEY","")
-                        ?.let {fetchedWeather[i][0].id = it.toInt()}
+                        ?.let {fetchedWeather[i][0].id = it}
                     currentWeatherDao.upsert(fetchedWeather[i][0])
                 }
                 else{
-                    locationRepository.getAllCity().get(i-1).Key?.let { fetchedWeather[i][0].id = it.toInt() }
+                    locationRepository.getAllCity().get(i-1).Key?.let { fetchedWeather[i][0].id = it }
                     currentWeatherDao.upsert(fetchedWeather[i][0])
                 }
                 Log.d("ForecastRepositoryImpl", "persistFetchedCurrentWeather: ${fetchedWeather[i]}")
@@ -194,14 +194,6 @@ class ForecastRepositoryImpl @Inject constructor(
         }
 
         weatherNetworkDataSource.fetchCurrentWeather(listKey, Locale.getDefault().language)
-//        for (i in 0..locationRepository.getAllCity().size){
-//            weatherNetworkDataSource.fetchCurrentWeather(locationRepository.getAllCity()[i].Key, Locale.getDefault().language)
-//        }
-//        sharedPreferences.getString("LOCATION_KEY","")
-//            ?.let { weatherNetworkDataSource.fetchCurrentWeather(it, Locale.getDefault().language) }
-//        for (location in locationRepository.getAllCity()){
-//            weatherNetworkDataSource.fetchCurrentWeather(location.Key, Locale.getDefault().language)
-//        }
     }
     private suspend fun fetchFutureWeather(){
         sharedPreferences.getString("LOCATION_KEY","")
