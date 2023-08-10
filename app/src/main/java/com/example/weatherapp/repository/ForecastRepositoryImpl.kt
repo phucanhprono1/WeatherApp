@@ -172,18 +172,18 @@ class ForecastRepositoryImpl @Inject constructor(
         }
 
     }
-    private suspend fun getWeatherLocationKey():List<String>{
-        var listKey = ArrayList<String>()
-        var locationKey = ""
-        sharedPreferences.getString("LOCATION_KEY","")?.let {
-            locationKey = it
-        }
-        listKey.add(locationKey)
-        for (location in locationRepository.getAllCity()){
-            listKey.add(location.Key)
-        }
-        return listKey
-    }
+//    private suspend fun getWeatherLocationKey():List<String>{
+//        var listKey = ArrayList<String>()
+//        var locationKey = ""
+//        sharedPreferences.getString("LOCATION_KEY","")?.let {
+//            locationKey = it
+//        }
+//        listKey.add(locationKey)
+//        for (location in locationRepository.getAllCity()){
+//            listKey.add(location.Key)
+//        }
+//        return listKey
+//    }
     private suspend fun fetchCurrentWeather(){
         var listKey = ArrayList<String>()
         sharedPreferences.getString("LOCATION_KEY","")?.let {

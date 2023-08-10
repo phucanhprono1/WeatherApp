@@ -1,0 +1,31 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240">
+
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M120,20a100,100 0 1,0 100,100A100,100 0 0,0 120,20z"/>
+
+    <!-- Cardinal Directions -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFFFF"
+        android:pathData="M120,40L120,120M120,200L120,120M40,120L120,120M200,120L120,120"/>
+
+    <!-- Diagonal Lines -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFFFF"
+        android:pathData="M34,34L206,206M206,34L34,206"/>
+
+    <!-- Compass Needle -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M120,20L115,45L120,40L125,45z"/>
+
+</vector>
+

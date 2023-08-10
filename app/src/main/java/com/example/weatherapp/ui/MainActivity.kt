@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     public lateinit var binding: ActivityMainBinding
 
     //    private lateinit var fragmentList : ArrayList<Fragment>
-    private lateinit var fragmentAdapter: FragmentAdapter
+    public lateinit var fragmentAdapter: FragmentAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     var locationName = ""
 

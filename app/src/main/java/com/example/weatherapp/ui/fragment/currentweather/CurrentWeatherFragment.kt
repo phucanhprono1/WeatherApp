@@ -116,7 +116,7 @@ class CurrentWeatherFragment : ScopedFragment() {
         binding.btn5DayForecast.setOnClickListener{
             startActivity(Intent(requireContext(), Detail5DayActivity::class.java))
         }
-
+//        var url = "https://www.accuweather.com/en/vn/thanh-tri/${viewModel.key}/daily-weather-forecast/{}"
 
         if (nonLiveCurrentWeather != null) {
             binding.tvTemp.text = Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
@@ -126,6 +126,8 @@ class CurrentWeatherFragment : ScopedFragment() {
             binding.textRealFeel.text = "${nonLiveCurrentWeather.RealFeelTemperature}°${nonLiveCurrentWeather.Unit}"
             binding.textUV.text = nonLiveCurrentWeather.UVIndex.toString()
             binding.textPressure.text = "${nonLiveCurrentWeather.pressure}${nonLiveCurrentWeather.pressureUnit}"
+            binding.tvWindDirCurrent.text = convertAbbreviationToFullDirection(nonLiveCurrentWeather.windDirection)
+            binding.tvWindSpeedCurrent.text = "${nonLiveCurrentWeather.windSpeed} ${nonLiveCurrentWeather.windSpeedUnit}"
         }
         val nonLiveForecastWeather = viewModel.forecastWeatherNonLive
         if (nonLiveCurrentWeather!=null){
@@ -145,7 +147,28 @@ class CurrentWeatherFragment : ScopedFragment() {
 
         bindUi()
     }
+    fun convertAbbreviationToFullDirection(abbreviation: String): String {
+        val directionMap = mapOf(
+            "N" to "North",
+            "NNE" to "North-Northeast",
+            "NE" to "Northeast",
+            "ENE" to "East-Northeast",
+            "E" to "East",
+            "ESE" to "East-Southeast",
+            "SE" to "Southeast",
+            "SSE" to "South-Southeast",
+            "S" to "South",
+            "SSW" to "South-Southwest",
+            "SW" to "Southwest",
+            "WSW" to "West-Southwest",
+            "W" to "West",
+            "WNW" to "West-Northwest",
+            "NW" to "Northwest",
+            "NNW" to "North-Northwest"
+        )
 
+        return directionMap[abbreviation] ?: abbreviation
+    }
 
     // Method to set the scroll position for the fragment's ScrollView
     fun setScrollPosition(scrollX: Int) {
@@ -166,6 +189,8 @@ class CurrentWeatherFragment : ScopedFragment() {
                 binding.textRealFeel.text = "${it.RealFeelTemperature}°${it.Unit}"
                 binding.textUV.text = it.UVIndex.toString()
                 binding.textPressure.text = "${it.pressure}${it.pressureUnit}"
+                binding.tvWindDirCurrent.text = convertAbbreviationToFullDirection(it.windDirection)
+                binding.tvWindSpeedCurrent.text = "${it.windSpeed} ${it.windSpeedUnit}"
 //                binding.textChanceOfRain.text = "${it.PrecipitationProbability}%"
             }
 

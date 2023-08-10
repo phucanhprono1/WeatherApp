@@ -15,8 +15,6 @@ class ImperialCurrentWeather(
     override val LocalObservationDateTime: String,
     @ColumnInfo(name = "MobileLink")
     override val MobileLink: String,
-//    @ColumnInfo(name = "PrecipitationType")
-//    override val PrecipitationType: Any,
     @ColumnInfo(name = "temperature_Imperial_Value")
     override val Temperature: Double,
     @ColumnInfo(name = "temperature_Imperial_Unit")
@@ -32,7 +30,14 @@ class ImperialCurrentWeather(
     override val pressureUnit: String,
     @ColumnInfo(name = "real_feel_temperature_imperial_Value")
     override val RealFeelTemperature: Double,
-    override val RelativeHumidity: Int
+    @ColumnInfo(name = "RelativeHumidity")
+    override val RelativeHumidity: Int,
+    @ColumnInfo(name = "wind_speed_imperial_Value")
+    override val windSpeed: Double,
+    @ColumnInfo(name = "wind_speed_imperial_Unit")
+    override val windSpeedUnit: String,
+    @ColumnInfo(name = "wind_direction_Localized")
+    override val windDirection: String
 
 
 ):UnitLocalizedCurrentWeather

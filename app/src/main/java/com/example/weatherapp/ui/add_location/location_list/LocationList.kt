@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.add_location.location_list
 
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.adapter.LocationRecyclerAdapter
 import com.example.weatherapp.databinding.ActivityLocationListBinding
 import com.example.weatherapp.repository.LocationRepositoryImpl
+import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.prefs.Preferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -18,10 +21,11 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
     private lateinit var binding: ActivityLocationListBinding
     private lateinit var viewModel: LocationListViewModel
     private var locationAdapter : LocationRecyclerAdapter = LocationRecyclerAdapter(this)
-
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var locationRepo : LocationRepositoryImpl
-
+    var listlocation=ArrayList<LocationKeyResponse>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLocationListBinding.inflate(layoutInflater)

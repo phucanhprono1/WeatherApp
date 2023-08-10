@@ -12,6 +12,7 @@ import com.example.weatherapp.databinding.ActivitySearchLocationBinding
 import com.example.weatherapp.repository.LocationRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
+import com.example.weatherapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +22,7 @@ class SearchLocation : AppCompatActivity(), SearchResultAdapter.OnResultClickLis
 
     private lateinit var binding: ActivitySearchLocationBinding
     private var searchAdapter: SearchResultAdapter = SearchResultAdapter(this)
+    val mainActivity = MainActivity()
     @Inject
     lateinit var locationRepo : LocationRepositoryImpl
     override fun onCreate(savedInstanceState: Bundle?) {

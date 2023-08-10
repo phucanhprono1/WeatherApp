@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+
 const val CURRENT_WEATHER_ID = 0
 @Entity(tableName = "current_weather")
 data class CurrentWeatherResponseItem(
@@ -25,6 +26,8 @@ data class CurrentWeatherResponseItem(
     val RelativeHumidity: Int,
     val UVIndex: Int,
     val UVIndexText: String,
+    @Embedded(prefix = "wind_")
+    val Wind: Wind
     ){
     @PrimaryKey(autoGenerate = false)
     var id: Int? = null

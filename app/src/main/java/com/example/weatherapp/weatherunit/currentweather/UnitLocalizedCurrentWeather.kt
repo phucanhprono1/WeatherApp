@@ -16,6 +16,9 @@ interface UnitLocalizedCurrentWeather {
     val UVIndex: Int
     val pressure: Double
     val pressureUnit: String
+    val windSpeed: Double
+    val windSpeedUnit: String
+    val windDirection: String
     val RealFeelTemperature: Double
     val RelativeHumidity: Int
 

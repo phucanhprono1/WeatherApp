@@ -34,5 +34,11 @@ class MetricCurrentWeather(
     @ColumnInfo(name = "real_feel_temperature_metric_Value")
     override val RealFeelTemperature: Double,
     @ColumnInfo(name = "RelativeHumidity")
-    override val RelativeHumidity: Int
+    override val RelativeHumidity: Int,
+    @ColumnInfo(name = "wind_speed_metric_Value")
+    override val windSpeed: Double,
+    @ColumnInfo(name = "wind_speed_metric_Unit")
+    override val windSpeedUnit: String,
+    @ColumnInfo(name = "wind_direction_Localized")
+    override val windDirection: String
 ) :UnitLocalizedCurrentWeather
