@@ -233,9 +233,12 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
         binding.circleIndicator.setViewPager(binding.viewPager2Main)
 
-        binding.rightMenuButton.setOnClickListener {
-            showPopUpMenu(it)
+        binding.toolbar.menu.findItem(R.id.action_settings).setOnMenuItemClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            true
         }
+
         // Them Add Location
         binding.leftButton.setOnClickListener {
             val addIntent = Intent(this@MainActivity, LocationList::class.java)
