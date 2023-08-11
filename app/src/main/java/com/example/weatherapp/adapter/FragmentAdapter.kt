@@ -12,10 +12,6 @@ class FragmentAdapter(fragmentActivity: FragmentActivity,private var locationNam
     private val fragmentList = ArrayList<Fragment>()
 
 
-    fun addFragment(fragment: Fragment, locationName: KeyName) {
-        fragmentList.add(fragment)
-        locationNames.add(locationName)
-    }
 
     override fun getItemCount(): Int {
         return locationNames.size
@@ -38,8 +34,5 @@ class FragmentAdapter(fragmentActivity: FragmentActivity,private var locationNam
     fun getLocationNameAtPosition(position: Int): String {
         return locationNames[position].name
     }
-    fun clearFragments() {
-        fragmentList.clear()
-        locationNames.clear()
-    }
+
 }

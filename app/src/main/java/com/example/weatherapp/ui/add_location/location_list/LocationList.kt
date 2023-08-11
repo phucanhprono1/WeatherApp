@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.adapter.LocationRecyclerAdapter
 import com.example.weatherapp.databinding.ActivityLocationListBinding
+import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,11 +21,15 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
 
     private lateinit var binding: ActivityLocationListBinding
     private lateinit var viewModel: LocationListViewModel
-    private var locationAdapter : LocationRecyclerAdapter = LocationRecyclerAdapter(this)
+
+
     @Inject
     lateinit var sharedPreferences: SharedPreferences
     @Inject
     lateinit var locationRepo : LocationRepositoryImpl
+    @Inject
+    lateinit var forecastRepository: ForecastRepository
+    private lateinit var locationAdapter : LocationRecyclerAdapter
     var listlocation=ArrayList<LocationKeyResponse>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +74,7 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
     }
 
     private fun prepareRecyclerView() {
-        locationAdapter = LocationRecyclerAdapter(this)
+        locationAdapter = LocationRecyclerAdapter(this, forecastRepository)
         binding.cityRView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = locationAdapter

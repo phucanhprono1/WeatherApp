@@ -3,11 +3,12 @@ package com.example.weatherapp.repository
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.weatherapp.networkdata.FORECAST_DAYS_COUNT
 import com.example.weatherapp.networkdata.FORECAST_HOURS_COUNT
+import com.example.weatherapp.networkdata.KeyTimeZone
 import com.example.weatherapp.weatherunit.currentweather.UnitLocalizedCurrentWeather
 import com.example.weatherapp.networkdata.WeatherNetworkDataSource
-import com.example.weatherapp.response.FivedaysForecast.DailyForecast
 import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
 import com.example.weatherapp.response.currentweather.CurrentWeatherResponse
 import com.example.weatherapp.response.forecast24h.Forecast24h
@@ -20,12 +21,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import java.security.Key
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 class ForecastRepositoryImpl @Inject constructor(
@@ -50,15 +53,25 @@ class ForecastRepositoryImpl @Inject constructor(
             }
         }
     }
-    private fun persistFetchHourlyForecast(fetchedWeather: Forecast24h) {
-        fun deleteOldForecastData(){
-            val thistime = LocalDateTime.now()
-            hourlyForecastDao.deleteOldEntries(thistime)
+    private fun persistFetchHourlyForecast(fetchedWeather: List<Forecast24h>) {
+        fun deleteOldForecastData(timezone:String, locationKey:String) {
+            val currentTime = ZonedDateTime.now(ZoneId.of(timezone))
+            hourlyForecastDao.deleteOldEntriesByLocationKey(currentTime, locationKey)
         }
+
         GlobalScope.launch(Dispatchers.IO) {
-            deleteOldForecastData()
-            hourlyForecastDao.insert(fetchedWeather)
-            Log.d("ForecastRepositoryImpl", "persistFetchedHourlyForecast: ${fetchedWeather}")
+//            deleteOldForecastData()
+
+            for (i in fetchedWeather.indices){
+                if(!fetchedWeather[i].isNullOrEmpty()){
+                    fetchedWeather[i][0].timezone?.let { fetchedWeather[i][0].locationKey?.let { it1 -> deleteOldForecastData(it, it1) } }
+                    if (hourlyForecastDao.countEntriesForLocationKey(fetchedWeather[i][0].locationKey!!) == 0){
+                        hourlyForecastDao.insert(fetchedWeather[i])
+                    }
+                }
+            }
+
+            Log.d("ForecastRepositoryImpl", "fetchHourlyWeather: $fetchedWeather")
         }
     }
 
@@ -66,14 +79,14 @@ class ForecastRepositoryImpl @Inject constructor(
         GlobalScope.launch (Dispatchers.IO){
 //            val listKey = getWeatherLocationKey();
 
-            for(i in 0..fetchedWeather.size-1){
+            for(i in fetchedWeather.indices){
                 if (i==0){
                     sharedPreferences.getString("LOCATION_KEY","")
                         ?.let {fetchedWeather[i][0].id = it}
                     currentWeatherDao.upsert(fetchedWeather[i][0])
                 }
                 else{
-                    locationRepository.getAllCity().get(i-1).Key?.let { fetchedWeather[i][0].id = it }
+                    locationRepository.getAllCity()[i-1].Key?.let { fetchedWeather[i][0].id = it }
                     currentWeatherDao.upsert(fetchedWeather[i][0])
                 }
                 Log.d("ForecastRepositoryImpl", "persistFetchedCurrentWeather: ${fetchedWeather[i]}")
@@ -82,15 +95,28 @@ class ForecastRepositoryImpl @Inject constructor(
         }
 
     }
-    private fun persistFetchFutureWeather(fetchedWeather: FiveDaysForecast) {
-        fun deleteOldForecastData(){
-            val today = LocalDateTime.now()
-            futureWeatherDao.deleteOldEntries(today)
+    private fun persistFetchFutureWeather(fetchedWeather: List<FiveDaysForecast>) {
+        fun deleteOldForecastData(timezone: String, locationKey: String) {
+            val today = ZonedDateTime.now(ZoneId.of(timezone))
+            futureWeatherDao.deleteOldEntriesByLocationKey(today, locationKey)
         }
         GlobalScope.launch(Dispatchers.IO) {
-            deleteOldForecastData()
-            futureWeatherDao.insert(fetchedWeather.DailyForecasts)
-            Log.d("ForecastRepositoryImpl", "persistFetchedFutureWeather: ${fetchedWeather}")
+
+            for (i in fetchedWeather.indices){
+                if (!fetchedWeather[i].DailyForecasts.isNullOrEmpty()){
+                    fetchedWeather[i].DailyForecasts[0].timezone?.let { fetchedWeather[i].DailyForecasts[0].locationKey?.let { it1 ->
+                        deleteOldForecastData(it,
+                            it1
+                        )
+                    } }
+                    if(futureWeatherDao.countEntriesForLocationKey(fetchedWeather[i].DailyForecasts[0].locationKey!!) <5 ){
+                        futureWeatherDao.insert(fetchedWeather[i].DailyForecasts)
+                    }
+
+                }
+
+            }
+            Log.d("ForecastRepositoryImpl", "persistFetchedFutureWeather: $fetchedWeather")
         }
     }
     override suspend fun getCurrentWeather(metric: Boolean): LiveData<out UnitLocalizedCurrentWeather> {
@@ -135,8 +161,8 @@ class ForecastRepositoryImpl @Inject constructor(
     }
 
     override fun get5dayForecastNonLive(startDate: LocalDateTime, metric: Boolean): List<UnitLocalizedFiveDaysForecastWeather> {
-        if (metric) return futureWeatherDao.getFutureWeatherMetricNonLive(startDate)
-        else return futureWeatherDao.getFutureWeatherMetricNonLive(startDate)
+        return if (metric) futureWeatherDao.getFutureWeatherMetricNonLive(startDate)
+        else futureWeatherDao.getFutureWeatherMetricNonLive(startDate)
     }
 
     override suspend fun getHourlyForecastList(
@@ -158,65 +184,111 @@ class ForecastRepositoryImpl @Inject constructor(
         else hourlyForecastDao.getHourlyForecastMetricNonLive(startDate)
     }
 
+    override suspend fun getFutureWeatherListByLocationKey(
+        startDate: LocalDateTime,
+        locationKey: String,
+        metric: Boolean
+    ): LiveData<out List<UnitLocalizedFiveDaysForecastWeather>> {
+        return withContext(Dispatchers.IO){
+            initWeatherData()
+            return@withContext if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKey(startDate,locationKey)
+            else futureWeatherDao.getFutureWeatherMetricByLocationKey(startDate,locationKey)
+        }
+    }
+
+    override fun get5dayForecastNonLiveByLocationKey(
+        startDate: LocalDateTime,
+        locationKey: String,
+        metric: Boolean
+    ): List<UnitLocalizedFiveDaysForecastWeather> {
+        return if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(startDate,locationKey)
+        else futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(startDate,locationKey)
+    }
+
+    override suspend fun getHourlyForecastListByLocationKey(
+        startDate: LocalDateTime,
+        locationKey: String,
+        metric: Boolean
+    ): LiveData<out List<UnitLocalized24hForecast>> {
+        return withContext(Dispatchers.IO){
+            initWeatherData()
+            return@withContext if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKey(startDate,locationKey)
+            else hourlyForecastDao.getHourlyForecastMetricByLocationKey(startDate,locationKey)
+        }
+    }
+
+    override fun getHourlyForecastNonLiveByLocationKey(
+        startDate: LocalDateTime,
+        locationKey: String,
+        metric: Boolean
+    ): List<UnitLocalized24hForecast> {
+        return if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(startDate,locationKey)
+        else hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(startDate,locationKey)
+    }
+
 
     private suspend fun initWeatherData(){
         //val lastFetchedTime = currentWeatherDao.getWeatherMetricNonLive().zonedDateTime
+        getListKey()
+//        fetchCurrentWeather()
+//        fetchFutureWeather()
+//        fetchHourlyForecast()
+//        if (isFetchFutureNeeded()){
+//            fetchFutureWeather()
+//        }
+//        if (isFetchHourlyNeeded()){
+//            fetchHourlyForecast()
+//        }
+
+    }
+
+    private val _listKey = MutableLiveData<List<KeyTimeZone>>()
+    private val listKey: LiveData<List<KeyTimeZone>>
+        get() = _listKey
+
+    suspend fun getListKey(){
+        val newListKey = ArrayList<KeyTimeZone>()
+        sharedPreferences.getString("LOCATION_KEY", "")?.let {it1 ->
+            sharedPreferences.getString("TIME_ZONE", "")?.let {
+                newListKey.add(KeyTimeZone(it1, it))
+            }
+            for (location in locationRepository.getAllCity()) {
+                newListKey.add(KeyTimeZone(location.Key, location.TimeZone.Name))
+            }
+        }
+
+        // Update the _listKey LiveData with the new value
+        _listKey.postValue(newListKey)
         fetchCurrentWeather()
         fetchFutureWeather()
         fetchHourlyForecast()
-        if (isFetchFutureNeeded()){
-            fetchFutureWeather()
-        }
-        if (isFetchHourlyNeeded()){
-            fetchHourlyForecast()
-        }
-
     }
-//    private suspend fun getWeatherLocationKey():List<String>{
-//        var listKey = ArrayList<String>()
-//        var locationKey = ""
-//        sharedPreferences.getString("LOCATION_KEY","")?.let {
-//            locationKey = it
-//        }
-//        listKey.add(locationKey)
-//        for (location in locationRepository.getAllCity()){
-//            listKey.add(location.Key)
-//        }
-//        return listKey
-//    }
-    private suspend fun fetchCurrentWeather(){
-        var listKey = ArrayList<String>()
-        sharedPreferences.getString("LOCATION_KEY","")?.let {
-            listKey.add(it)
-            for (location in locationRepository.getAllCity()){
-                listKey.add(location.Key)
-            }
-        }
+    private suspend fun fetchCurrentWeather() {
 
         weatherNetworkDataSource.fetchCurrentWeather(listKey, Locale.getDefault().language)
     }
     private suspend fun fetchFutureWeather(){
-        sharedPreferences.getString("LOCATION_KEY","")
-            ?.let { weatherNetworkDataSource.fetchFutureWeather(it, Locale.getDefault().language) }
+        weatherNetworkDataSource.fetchFutureWeather(listKey, Locale.getDefault().language)
     }
     private suspend fun fetchHourlyForecast(){
-        sharedPreferences.getString("LOCATION_KEY","")
-            ?.let { weatherNetworkDataSource.fetchHourlyForecast(it, Locale.getDefault().language) }
+        weatherNetworkDataSource.fetchHourlyForecast(listKey, Locale.getDefault().language)
     }
-    private fun isFetchHourlyNeeded(): Boolean{
-        val today = LocalDateTime.now()
-        val hourlyForecastCount = hourlyForecastDao.countHourlyForecast(today)
-        return hourlyForecastCount < FORECAST_HOURS_COUNT
 
-    }
     private fun isFetchCurrentNeeded(lastFetchedTime: ZonedDateTime): Boolean {
         val thirtyMinutesAgo = ZonedDateTime.now().minusMinutes(30)
         return lastFetchedTime.isBefore(thirtyMinutesAgo)
     }
-    private fun isFetchFutureNeeded(): Boolean{
+    private fun isFetchHourlyNeeded(): Boolean {
+        val today = LocalDateTime.now()
+        val hourlyForecastCount = hourlyForecastDao.countHourlyForecast(today)
+        val totalLocationKeys = _listKey.value?.size ?: 0
+        return hourlyForecastCount < FORECAST_HOURS_COUNT * totalLocationKeys
+    }
+
+    private fun isFetchFutureNeeded(): Boolean {
         val today = LocalDateTime.now()
         val futureWeatherCount = futureWeatherDao.countFutureWeather(today)
-        return futureWeatherCount < FORECAST_DAYS_COUNT
-
+        val totalLocationKeys = _listKey.value?.size ?: 0
+        return futureWeatherCount < FORECAST_DAYS_COUNT * totalLocationKeys
     }
 }

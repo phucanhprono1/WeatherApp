@@ -11,6 +11,8 @@ import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
 import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherViewModelFactory
 import com.example.weatherapp.networkdata.WeatherNetworkDataSource
 import com.example.weatherapp.networkdata.WeatherNetworkDataSourceImpl
+import com.example.weatherapp.provider.UnitProvider
+import com.example.weatherapp.provider.UnitProviderImpl
 import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.ForecastRepositoryImpl
 import com.example.weatherapp.repository.LocationRepository
@@ -94,8 +96,13 @@ object AppModule {
     fun provideCurrentWeatherViewModelFactory(
         context: Context,
         lifecycleOwner: LifecycleOwner,
-        forecastRepository: ForecastRepository
+        forecastRepository: ForecastRepository,
+        unitProvider: UnitProvider
     ): CurrentWeatherViewModelFactory {
-        return CurrentWeatherViewModelFactory(context, lifecycleOwner, forecastRepository)
+        return CurrentWeatherViewModelFactory(context, lifecycleOwner, forecastRepository,unitProvider)
+    }
+    @Provides
+    fun provideUnitProvider(context: Context): UnitProvider {
+        return UnitProviderImpl(context)
     }
 }

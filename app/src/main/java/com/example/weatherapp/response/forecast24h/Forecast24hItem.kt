@@ -6,7 +6,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.weatherapp.response.FivedaysForecast.Wind
 
-@Entity(tableName = "forecast24h_table",indices = [Index(value = ["DateTime"], unique = true)])
+@Entity(tableName = "forecast24h_table",indices = [Index(value = ["DateTime"], unique = false)])
 data class Forecast24hItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int?= null,
@@ -24,4 +24,7 @@ data class Forecast24hItem(
     @Embedded(prefix = "wind_")
     val Wind: Wind,
 
-    )
+    ){
+    var locationKey: String ?= null
+    var timezone: String ?= null
+}

@@ -18,4 +18,8 @@ interface ForecastRepository {
     suspend fun getHourlyForecastList(startDate: LocalDateTime, metric: Boolean): LiveData<out List<UnitLocalized24hForecast>>
     fun getHourlyForecastNonLive(startDate: LocalDateTime, metric: Boolean):List<UnitLocalized24hForecast>
 
+    suspend fun getFutureWeatherListByLocationKey(startDate: LocalDateTime, locationKey: String, metric: Boolean): LiveData<out List< UnitLocalizedFiveDaysForecastWeather>>
+    fun get5dayForecastNonLiveByLocationKey(startDate: LocalDateTime, locationKey: String, metric: Boolean):List<UnitLocalizedFiveDaysForecastWeather>
+    suspend fun getHourlyForecastListByLocationKey(startDate: LocalDateTime, locationKey: String, metric: Boolean): LiveData<out List<UnitLocalized24hForecast>>
+    fun getHourlyForecastNonLiveByLocationKey(startDate: LocalDateTime, locationKey: String, metric: Boolean):List<UnitLocalized24hForecast>
 }

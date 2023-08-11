@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.databinding.LocationListItemBinding
+import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
 
 class LocationRecyclerAdapter(
-    private var listener: OnLocationLongPressListener
-    )
+    private var listener: OnLocationLongPressListener,
+    private val forecastRepository: ForecastRepository,
+)
     : RecyclerView.Adapter<LocationRecyclerAdapter.LocationViewHolder>(){
     private var locationList = ArrayList<LocationKeyResponse>()
     private var checkedItems: ArrayList<Boolean> = ArrayList()
@@ -61,8 +65,14 @@ class LocationRecyclerAdapter(
         with(holder){
             with(locationList[position]){
                 binding.locationItemName.text = this.EnglishName
-                binding.locationItemTemp.text = "30"
-                binding.locationItemWeather.text = "Trời nắng"
+                binding.locationItemTemp.text = "${Math.round(forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).Temperature).toInt().toString()}"
+                binding.locationItemWeather.text = "${forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).WeatherText.toString()}"
+//                GlobalScope.launch {
+//                    binding.locationItemTemp.text = "${forecastRepository.getCurrentWeatherByLocationKey(this@with.Key,true).value?.Temperature.toString()}°"
+//                    binding.locationItemWeather.text = "${forecastRepository.getCurrentWeatherByLocationKey(this@with.Key,true).value?.WeatherText.toString()}"
+//                }
+
+
 
                 if (isSelectionMode) {
                     binding.checkbox.visibility = View.VISIBLE

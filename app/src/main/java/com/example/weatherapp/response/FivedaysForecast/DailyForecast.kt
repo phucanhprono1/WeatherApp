@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "future_weather", indices = [Index(value = ["Date"], unique = true)])
+@Entity(tableName = "future_weather", indices = [Index(value = ["Date"], unique = false)])
 data class DailyForecast(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
@@ -19,4 +19,7 @@ data class DailyForecast(
     val Night: Night,
     @Embedded(prefix = "temperature_")
     val Temperature: Temperature
-)
+){
+    var locationKey: String ?= null
+    var timezone: String ?= null
+}

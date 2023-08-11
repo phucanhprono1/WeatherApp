@@ -8,10 +8,10 @@ import com.example.weatherapp.response.forecast24h.Forecast24h
 
 interface WeatherNetworkDataSource {
     val downloadedCurrentWeather: LiveData<List<CurrentWeatherResponse>>
-    suspend fun fetchCurrentWeather(locationKey: List<String>,language:String)
-    val downloadedFutureWeather: LiveData<FiveDaysForecast>
-    suspend fun fetchFutureWeather(locationKey: String,language:String)
-    val downloadedHourlyForecast: LiveData<Forecast24h>
-    suspend fun fetchHourlyForecast(locationKey: String,language:String)
+    suspend fun fetchCurrentWeather(locationKey: LiveData<List<KeyTimeZone>>,language:String)
+    val downloadedFutureWeather: LiveData<List<FiveDaysForecast>>
+    suspend fun fetchFutureWeather(locationKey: LiveData<List<KeyTimeZone>>,language:String)
+    val downloadedHourlyForecast: LiveData<List<Forecast24h>>
+    suspend fun fetchHourlyForecast(locationKey: LiveData<List<KeyTimeZone>>,language:String)
 
 }

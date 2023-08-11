@@ -8,6 +8,7 @@
             android:title="Unit System"
             android:summary="%s"
             android:defaultValue="METRIC"
-            />
+            android:entries="@array/unitSystemEntries"
+            android:entryValues="@array/unitSystemValues"/>
     </PreferenceCategory>
 </PreferenceScreen>

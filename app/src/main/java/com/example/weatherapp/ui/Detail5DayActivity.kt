@@ -24,7 +24,7 @@ class Detail5DayActivity : AppCompatActivity() {
         binding.backButton.setOnClickListener{
             finish()
         }
-        val fivedayForecast = forecastRepository.get5dayForecastNonLive(LocalDateTime.now(),true);
+        val fivedayForecast = forecastRepository.get5dayForecastNonLiveByLocationKey(LocalDateTime.now(),intent.getStringExtra("locationKey")!!,true)
         binding.rcvDetail5Day.adapter = FiveDayDetailAdapter(fivedayForecast)
         binding.rcvDetail5Day.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
