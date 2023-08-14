@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo
 class MetricFiveDaysForecastWeather (
     @ColumnInfo(name = "Date")
     override val date: String,
+    @ColumnInfo(name = "timezone")
+    override val timezone: String,
     @ColumnInfo(name = "MobileLink")
     override val link: String,
     @ColumnInfo(name = "temperature_maximum_Value")

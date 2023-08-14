@@ -29,8 +29,8 @@ class CurrentWeatherViewModel  @Inject constructor(
 ) : WeatherViewModel(forecastRepository,context,unitProvider, lifecycleOwner) {
     var key:String = ""
 
-    fun currentWeatherNonLiveByLocationKey(key:String):UnitLocalizedCurrentWeather {
-        return forecastRepository.getWeatherNonLiveByLocationKey(key,super.isMetricUnit)
+    fun currentWeatherNonLiveByLocationKey(key:String,metric:Boolean):UnitLocalizedCurrentWeather {
+        return forecastRepository.getWeatherNonLiveByLocationKey(key,metric)
     }
     fun forecastWeatherNonLiveByLocationKey(key:String):List<UnitLocalizedFiveDaysForecastWeather> {
         return forecastRepository.get5dayForecastNonLiveByLocationKey(LocalDateTime.now(),key,super.isMetricUnit)

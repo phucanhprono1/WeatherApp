@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.weatherunit.forecastweather.UnitLocalizedFiveDaysForecastWeather
 import org.threeten.bp.LocalDate
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -40,8 +41,8 @@ class FiveDayDetailAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather>)
     override fun onBindViewHolder(holder: WeatherForecastViewHolder, position: Int) {
         val forecast = list[position]
 
-        holder.tvDayWeek.text = formatDateToDayOfWeek(forecast.date)
-        holder.tvDate.text = formatDate(forecast.date)
+        holder.tvDayWeek.text = formatDateToDayOfWeek(forecast.date,forecast.timezone)
+        holder.tvDate.text = formatDate(forecast.date, forecast.timezone)
         holder.ivIconDay.setImageResource(getWeatherIconResource(forecast.icon_day))
         holder.tvMaxTemp.text = "${Math.round(forecast.maxTemperature)}°"
         holder.tvMinTemp.text = "${Math.round(forecast.minTemperature)}°"
@@ -49,28 +50,32 @@ class FiveDayDetailAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather>)
         holder.tvWind.text = "${forecast.WindSpeed}${forecast.WindUnit}"
     }
 
-    private fun formatDateToDayOfWeek(inputDateStr: String): String {
+    private fun formatDateToDayOfWeek(inputDateStr: String, timeZone: String): String {
         val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
         val inputDate = ZonedDateTime.parse(inputDateStr, formatter)
 
-        val today = LocalDate.now()
+        val targetZone = ZoneId.of(timeZone)
+        val deviceZone = ZoneId.systemDefault()
+
+        val convertedDateTime = inputDate.withZoneSameInstant(targetZone)
+        val today = ZonedDateTime.now(targetZone).toLocalDate()
         val tomorrow = today.plusDays(1)
-        val dayOfWeek = inputDate.toLocalDate().dayOfWeek
+        val dayOfWeek = convertedDateTime.toLocalDate().dayOfWeek
 
         return when {
-            inputDate.toLocalDate() == today -> "Today"
-            inputDate.toLocalDate() == tomorrow -> "Tomorrow"
+            targetZone == deviceZone && convertedDateTime.toLocalDate() == today -> "Today"
+            targetZone == deviceZone && convertedDateTime.toLocalDate() == tomorrow -> "Tomorrow"
             else -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).capitalize()
         }
     }
-
-    private fun formatDate(inputDateStr: String): String {
-        // Convert the input date string to a ZonedDateTime object using the appropriate formatter
+    private fun formatDate(inputDateStr: String, timeZone: String): String {
         val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
         val inputDate = ZonedDateTime.parse(inputDateStr, formatter)
 
-        // Format the ZonedDateTime object to the "d/M" format
-        val formattedDate = inputDate.format(DateTimeFormatter.ofPattern("d/M"))
+        val targetZone = ZoneId.of(timeZone)
+        val convertedDateTime = inputDate.withZoneSameInstant(targetZone)
+
+        val formattedDate = convertedDateTime.format(DateTimeFormatter.ofPattern("d/M"))
         return formattedDate
     }
 

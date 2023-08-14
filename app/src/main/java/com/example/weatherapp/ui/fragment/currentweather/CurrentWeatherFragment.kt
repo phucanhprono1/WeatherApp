@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.adapter.HourlyForecastAdapter
@@ -126,7 +127,7 @@ class CurrentWeatherFragment : ScopedFragment() {
         val locationKey = requireArguments().getString("locationKey")
         locationKey?.let {
             val nonLiveCurrentWeather = viewModel.currentWeatherNonLiveByLocationKey(
-                it
+                it,viewModel.isMetricUnit
             )
             if (nonLiveCurrentWeather != null) {
                 binding.tvTemp.text =
@@ -209,53 +210,47 @@ class CurrentWeatherFragment : ScopedFragment() {
         binding.scrollView.scrollTo(scrollX, 0)
     }
     private fun getRefresh(){
-        val locationKey = requireArguments().getString("locationKey")
-        locationKey?.let {
-            val nonLiveCurrentWeather = viewModel.currentWeatherNonLiveByLocationKey(
-                it
-            )
-            if (nonLiveCurrentWeather != null) {
-                binding.tvTemp.text =
-                    Math.round(nonLiveCurrentWeather.Temperature).toInt().toString()
-                binding.tvUnitDegree.text = "°${nonLiveCurrentWeather.Unit}"
-                binding.weatherCondition.text = nonLiveCurrentWeather.WeatherText
-                binding.textHumidity.text = "${nonLiveCurrentWeather.RelativeHumidity}%"
-                binding.textRealFeel.text =
-                    "${nonLiveCurrentWeather.RealFeelTemperature}°${nonLiveCurrentWeather.Unit}"
-                binding.textUV.text = nonLiveCurrentWeather.UVIndex.toString()
-                binding.textPressure.text =
-                    "${nonLiveCurrentWeather.pressure}${nonLiveCurrentWeather.pressureUnit}"
-                binding.tvWindDirCurrent.text =
-                    convertAbbreviationToFullDirection(nonLiveCurrentWeather.windDirection)
-                binding.tvWindSpeedCurrent.text =
-                    "${nonLiveCurrentWeather.windSpeed} ${nonLiveCurrentWeather.windSpeedUnit}"
-            }
-            val nonLiveForecastWeather = viewModel.forecastWeatherNonLiveByLocationKey(it)
-            if (!nonLiveForecastWeather.isNullOrEmpty()) {
-                binding.minmaxToday.text =
-                    "${Math.round(nonLiveForecastWeather[0].minTemperature)}°/${
-                        Math.round(nonLiveForecastWeather[0].maxTemperature)
-                    }°"
-                binding.tvMoreDetails5dayForecast.setOnClickListener {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(nonLiveForecastWeather[0].link)
-                        )
-                    )
-                }
-                binding.rvForecast.adapter = WeatherForecastAdapter(nonLiveForecastWeather)
-                binding.rvForecast.layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            }
+        lifecycleScope.launch {
+            try {
+                val currentweather = viewModel.currentWeatherByLocationKey.await()
+                currentweather.observe(viewLifecycleOwner) {
 
-            val nonLiveHourlyForecast = viewModel.hourlyForecastNonLiveByLocationKey(it)
-            if (!nonLiveHourlyForecast.isNullOrEmpty()) {
-                binding.rv24hForecast.adapter = HourlyForecastAdapter(nonLiveHourlyForecast)
-                binding.rv24hForecast.layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            }
-            if(nonLiveCurrentWeather != null && nonLiveForecastWeather != null && nonLiveHourlyForecast != null){
+                    if (it == null) return@observe
+
+                    binding.tvTemp.text = Math.round(it.Temperature).toInt().toString()
+                    binding.tvUnitDegree.text = "°${it.Unit}"
+                    binding.weatherCondition.text = it.WeatherText
+                    binding.textHumidity.text = "${it.RelativeHumidity}%"
+                    binding.textRealFeel.text = "${it.RealFeelTemperature}°${it.Unit}"
+                    binding.textUV.text = it.UVIndex.toString()
+                    binding.textPressure.text = "${it.pressure}${it.pressureUnit}"
+                    binding.tvWindDirCurrent.text = convertAbbreviationToFullDirection(it.windDirection)
+                    binding.tvWindSpeedCurrent.text = "${it.windSpeed} ${it.windSpeedUnit}"
+//                binding.textChanceOfRain.text = "${it.PrecipitationProbability}%"
+                }
+
+                val forecastweather = viewModel.forecastWeatherByLocationKey.await()
+                forecastweather.observe(viewLifecycleOwner) {
+                    if (it.isNullOrEmpty()) return@observe
+
+                    binding.minmaxToday.text =
+                        "${Math.round(it[0].minTemperature)}°/${Math.round(it[0].maxTemperature)}°"
+                    binding.rvForecast.adapter = WeatherForecastAdapter(it)
+                    binding.rvForecast.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                }
+                val hourlyForecast = viewModel.hourlyForecastByLocationKey.await()
+                hourlyForecast.observe(viewLifecycleOwner) {
+                    if (it.isNullOrEmpty()) return@observe
+                    binding.rv24hForecast.adapter = HourlyForecastAdapter(it)
+                    binding.rv24hForecast.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                }
+                if(currentweather.value != null && forecastweather.value != null && hourlyForecast.value != null){
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            } catch (e: NoConnectivityException) {
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         }

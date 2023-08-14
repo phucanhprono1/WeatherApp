@@ -18,6 +18,7 @@ import javax.inject.Inject
 class LocationRecyclerAdapter(
     private var listener: OnLocationLongPressListener,
     private val forecastRepository: ForecastRepository,
+    private var listener1: OnLocationClickListener
 )
     : RecyclerView.Adapter<LocationRecyclerAdapter.LocationViewHolder>(){
     private var locationList = ArrayList<LocationKeyResponse>()
@@ -32,7 +33,9 @@ class LocationRecyclerAdapter(
         this.listener = listener
     }
 
-
+    interface OnLocationClickListener {
+        fun onLocationClick(location: LocationKeyResponse)
+    }
     fun setLocationKeyResponseList(LocationKeyResponseList: List<LocationKeyResponse>){
         this.locationList = ArrayList(LocationKeyResponseList)
         this.checkedItems = ArrayList<Boolean>(Collections.nCopies(LocationKeyResponseList.size,
@@ -65,8 +68,14 @@ class LocationRecyclerAdapter(
         with(holder){
             with(locationList[position]){
                 binding.locationItemName.text = this.EnglishName
-                binding.locationItemTemp.text = "${Math.round(forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).Temperature).toInt().toString()}"
-                binding.locationItemWeather.text = "${forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).WeatherText.toString()}"
+                try {
+                    binding.locationItemTemp.text = "${Math.round(forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).Temperature).toInt().toString()}"
+                    binding.locationItemWeather.text = "${forecastRepository.getWeatherNonLiveByLocationKey(this.Key,true).WeatherText.toString()}"
+                }catch (e:Exception){
+                    binding.locationItemTemp.text = "N/A"
+                    binding.locationItemWeather.text = "N/A"
+                }
+
 //                GlobalScope.launch {
 //                    binding.locationItemTemp.text = "${forecastRepository.getCurrentWeatherByLocationKey(this@with.Key,true).value?.Temperature.toString()}°"
 //                    binding.locationItemWeather.text = "${forecastRepository.getCurrentWeatherByLocationKey(this@with.Key,true).value?.WeatherText.toString()}"
@@ -91,6 +100,9 @@ class LocationRecyclerAdapter(
                     if (isSelectionMode) {
                         toggleSelection(position)
                         notifyItemChanged(position)
+                    }
+                    else {
+                        listener1.onLocationClick(locationList[position])
                     }
                 }
                 holder.itemView.setOnLongClickListener {

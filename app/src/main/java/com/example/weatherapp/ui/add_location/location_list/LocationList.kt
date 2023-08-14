@@ -1,8 +1,10 @@
 package com.example.weatherapp.ui.add_location.location_list
 
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,12 +14,13 @@ import com.example.weatherapp.databinding.ActivityLocationListBinding
 import com.example.weatherapp.repository.ForecastRepository
 import com.example.weatherapp.repository.LocationRepositoryImpl
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
+import com.example.weatherapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.prefs.Preferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLongPressListener {
+class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLongPressListener, LocationRecyclerAdapter.OnLocationClickListener {
 
     private lateinit var binding: ActivityLocationListBinding
     private lateinit var viewModel: LocationListViewModel
@@ -74,7 +77,7 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
     }
 
     private fun prepareRecyclerView() {
-        locationAdapter = LocationRecyclerAdapter(this, forecastRepository)
+        locationAdapter = LocationRecyclerAdapter(this, forecastRepository, this)
         binding.cityRView.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = locationAdapter
@@ -100,5 +103,14 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
         super.onResume()
         val locationList = locationRepo.getAllCity()
         locationAdapter.setLocationKeyResponseList(locationList)
+    }
+    val activity: MainActivity = MainActivity()
+    override fun onLocationClick(location: LocationKeyResponse) {
+        Log.d("LocationList", "onLocationClick: ${location.EnglishName}")
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("LOCATION_KEY", location.Key)
+        startActivity(intent)
+        activity.finish()
+        finish()
     }
 }

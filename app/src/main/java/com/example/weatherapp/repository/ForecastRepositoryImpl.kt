@@ -191,8 +191,8 @@ class ForecastRepositoryImpl @Inject constructor(
     ): LiveData<out List<UnitLocalizedFiveDaysForecastWeather>> {
         return withContext(Dispatchers.IO){
             initWeatherData()
-            return@withContext if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKey(startDate,locationKey)
-            else futureWeatherDao.getFutureWeatherMetricByLocationKey(startDate,locationKey)
+            return@withContext if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKey(locationKey)
+            else futureWeatherDao.getFutureWeatherMetricByLocationKey(locationKey)
         }
     }
 
@@ -201,8 +201,8 @@ class ForecastRepositoryImpl @Inject constructor(
         locationKey: String,
         metric: Boolean
     ): List<UnitLocalizedFiveDaysForecastWeather> {
-        return if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(startDate,locationKey)
-        else futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(startDate,locationKey)
+        return if (metric) futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(locationKey)
+        else futureWeatherDao.getFutureWeatherMetricByLocationKeyNonLive(locationKey)
     }
 
     override suspend fun getHourlyForecastListByLocationKey(
@@ -212,8 +212,8 @@ class ForecastRepositoryImpl @Inject constructor(
     ): LiveData<out List<UnitLocalized24hForecast>> {
         return withContext(Dispatchers.IO){
             initWeatherData()
-            return@withContext if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKey(startDate,locationKey)
-            else hourlyForecastDao.getHourlyForecastMetricByLocationKey(startDate,locationKey)
+            return@withContext if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKey(locationKey)
+            else hourlyForecastDao.getHourlyForecastMetricByLocationKey(locationKey)
         }
     }
 
@@ -222,8 +222,8 @@ class ForecastRepositoryImpl @Inject constructor(
         locationKey: String,
         metric: Boolean
     ): List<UnitLocalized24hForecast> {
-        return if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(startDate,locationKey)
-        else hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(startDate,locationKey)
+        return if (metric) hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(locationKey)
+        else hourlyForecastDao.getHourlyForecastMetricByLocationKeyNonLive(locationKey)
     }
 
 

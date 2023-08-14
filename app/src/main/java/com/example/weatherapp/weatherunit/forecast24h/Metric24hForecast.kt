@@ -7,6 +7,8 @@ class Metric24hForecast (
     override val DateTime: String,
     @ColumnInfo(name = "EpochDateTime")
     override val EpochDateTime: Int,
+    @ColumnInfo(name = "timezone")
+    override val timezone: String,
     @ColumnInfo(name = "temperature_Value")
     override val temperature_value: Double,
     @ColumnInfo(name = "temperature_Unit")

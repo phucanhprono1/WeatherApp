@@ -12,6 +12,7 @@ import com.example.weatherapp.response.FivedaysForecast.FiveDaysForecast
 import com.example.weatherapp.weatherunit.forecastweather.UnitLocalizedFiveDaysForecastWeather
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -86,26 +87,25 @@ class WeatherForecastAdapter(val list: List<UnitLocalizedFiveDaysForecastWeather
             44-> holder.iconWeather.setImageResource(R.drawable.ic_w44)
         }
 
-        holder.tvDay.text = formatDateToDayOfWeek(forecast.date)
+        holder.tvDay.text = formatDateToDayOfWeek(forecast.date, forecast.timezone)
         holder.weatherCondition.text = forecast.iconPhrase_day
         holder.tvMinMaxTemp.text = Math.round(forecast.minTemperature).toInt().toString() + "°" + "/" + Math.round(forecast.maxTemperature).toInt().toString() + "°"
     }
-    fun formatDateToDayOfWeek(inputDateStr: String): String {
+    private fun formatDateToDayOfWeek(inputDateStr: String, timeZone: String): String {
         val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
         val inputDate = ZonedDateTime.parse(inputDateStr, formatter)
 
-        // Lấy ngày hôm nay
-        val today = LocalDate.now()
+        val targetZone = ZoneId.of(timeZone)
+        val deviceZone = ZoneId.systemDefault()
 
-        // Lấy ngày tiếp theo (ngày mai)
+        val convertedDateTime = inputDate.withZoneSameInstant(targetZone)
+        val today = ZonedDateTime.now(targetZone).toLocalDate()
         val tomorrow = today.plusDays(1)
-
-        // Lấy ngày trong tuần
-        val dayOfWeek = inputDate.toLocalDate().dayOfWeek
+        val dayOfWeek = convertedDateTime.toLocalDate().dayOfWeek
 
         return when {
-            inputDate.toLocalDate() == today -> "Today"
-            inputDate.toLocalDate() == tomorrow -> "Tomorrow"
+            targetZone == deviceZone && convertedDateTime.toLocalDate() == today -> "Today"
+            targetZone == deviceZone && convertedDateTime.toLocalDate() == tomorrow -> "Tomorrow"
             else -> dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()).capitalize()
         }
     }

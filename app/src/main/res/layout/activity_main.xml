@@ -16,35 +16,26 @@
         app:menu="@menu/main_menu"
         android:theme="@style/AppTheme.ToolbarMenu">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <!-- Title TextView -->
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/_20sdp" />
 
-            <!-- Left Button -->
-            <ImageButton
-                android:id="@+id/leftButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="8dp"
-                android:src="@drawable/ic_add"
-                android:background="?attr/selectableItemBackgroundBorderless"
-
-                android:contentDescription="@string/add" />
-
-            <!-- Title TextView -->
-            <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/_20sdp"
-                />
-
-
-        </RelativeLayout>
+        <!-- Left Button -->
+        <ImageButton
+            android:id="@+id/leftButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:padding="8dp"
+            android:src="@drawable/ic_add"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/add" />
 
     </androidx.appcompat.widget.Toolbar>
     <!-- TextView -->

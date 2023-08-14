@@ -103,7 +103,7 @@ class WeatherNetworkDataSourceImpl @Inject constructor(
                             val forecast24h = fetchedHourlyForecast.body()!!
                             forecast24h.forEach { forecast ->
                                 forecast.locationKey = key.Key // Add locationKey
-                                forecast.timezone = forecast.timezone // Add timezone
+                                forecast.timezone = key.TimeZone // Add timezone
                             }
                             fetchList.add(forecast24h)
                         }

@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.R
 import com.example.weatherapp.response.forecast24h.Forecast24hItem
 import com.example.weatherapp.weatherunit.forecast24h.UnitLocalized24hForecast
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 class HourlyForecastAdapter(val list: List<UnitLocalized24hForecast>) : RecyclerView.Adapter<HourlyForecastAdapter.HourlyForecastViewHolder>(){
     class HourlyForecastViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,7 +37,7 @@ class HourlyForecastAdapter(val list: List<UnitLocalized24hForecast>) : Recycler
 
     override fun onBindViewHolder(holder: HourlyForecastViewHolder, position: Int) {
         val hourlyforecast = list.get(position)
-        holder.tvTime.text = getTimeFromDateTime(hourlyforecast.DateTime)
+        holder.tvTime.text = getTimeFromDateTime(hourlyforecast.DateTime, hourlyforecast.timezone)
         holder.tvTemp.text = Math.round(hourlyforecast.temperature_value).toInt().toString()+ "°"
         holder.tvWind.text = hourlyforecast.WindSpeed.toString() + "" + hourlyforecast.WindUnit
         when(hourlyforecast.WeatherIcon){
@@ -78,15 +82,16 @@ class HourlyForecastAdapter(val list: List<UnitLocalized24hForecast>) : Recycler
             44-> holder.iconWeather.setImageResource(R.drawable.ic_w44)
         }
     }
-    fun getTimeFromDateTime(dateTimeString: String): String {
+    fun getTimeFromDateTime(dateTimeString: String, timeZone: String): String {
         try {
-            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-            val date = sdf.parse(dateTimeString)
-            val cal = Calendar.getInstance()
-            cal.time = date
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+            val zonedDateTime = ZonedDateTime.parse(dateTimeString, formatter)
 
-            val hour = cal.get(Calendar.HOUR_OF_DAY)
-            val minute = cal.get(Calendar.MINUTE)
+            val targetZone = ZoneId.of(timeZone)
+            val convertedDateTime = zonedDateTime.withZoneSameInstant(targetZone)
+
+            val hour = convertedDateTime.hour
+            val minute = convertedDateTime.minute
 
             return String.format("%02d:%02d", hour, minute)
         } catch (e: Exception) {

@@ -2,6 +2,7 @@ package com.example.weatherapp.weatherunit.forecastweather
 
 interface UnitLocalizedFiveDaysForecastWeather {
     val date: String
+    val timezone: String
     val link: String
     val maxTemperature: Double
     val minTemperature: Double

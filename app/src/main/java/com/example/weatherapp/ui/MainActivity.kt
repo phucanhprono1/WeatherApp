@@ -7,6 +7,8 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +41,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -229,6 +233,16 @@ class MainActivity : AppCompatActivity() {
         fragmentAdapter = FragmentAdapter(this, keyNameList)
         fragmentAdapter.updateDataList(keyNameList)
         binding.viewPager2Main.adapter = fragmentAdapter
+        val locationKey = intent.getStringExtra("LOCATION_KEY")
+        if (!locationKey.isNullOrEmpty()) {
+            // Đã nhận được locationKey từ LocationList, thực hiện xử lý tương ứng
+            // Ví dụ: Hiển thị dữ liệu cho locationKey tại vị trí tương ứng trong ViewPager
+            val viewPagerPosition = fragmentAdapter.getPositionForLocationKey(locationKey)
+            if (viewPagerPosition != -1) {
+                binding.viewPager2Main.currentItem = viewPagerPosition
+                binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(viewPagerPosition)
+            }
+        }
         binding.viewPager2Main.setPageTransformer(pageTransformer)
         binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
         binding.circleIndicator.setViewPager(binding.viewPager2Main)
@@ -238,7 +252,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             true
         }
+        binding.toolbar.menu.findItem(R.id.action_share).setOnMenuItemClickListener {
+            val screenshotBitmap = captureScreenshot(window.decorView.rootView)
+            val imagePath = saveScreenshot(screenshotBitmap, "screenshot.png")
 
+            val intent = Intent(this, ShareActivity::class.java)
+            intent.putExtra("screenshotPath", imagePath)
+            startActivity(intent)
+            true
+        }
         // Them Add Location
         binding.leftButton.setOnClickListener {
             val addIntent = Intent(this@MainActivity, LocationList::class.java)
@@ -246,6 +268,20 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+    fun captureScreenshot(view: View): Bitmap {
+        val screenshot = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(screenshot)
+        view.draw(canvas)
+        return screenshot
+    }
+    fun saveScreenshot(bitmap: Bitmap, filename: String): String {
+        val imagePath = File(externalCacheDir, filename)
+        val fos = FileOutputStream(imagePath)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        fos.flush()
+        fos.close()
+        return imagePath.absolutePath
     }
     override fun onResume() {
         super.onResume()
@@ -268,23 +304,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun showPopUpMenu(view: View) {
-        val popupMenu = PopupMenu(this, view)
 
-        popupMenu.menuInflater.inflate(R.menu.main_menu, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_settings -> {
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                    true
-                }
-
-                R.id.action_share -> true
-                else -> false
-            }
-        }
-        popupMenu.show()
-    }
 
     private fun getLocationAndFetchLocationKey() {
         if (ActivityCompat.checkSelfPermission(

@@ -20,10 +20,14 @@ interface FutureWeatherDao {
     fun countEntriesForLocationKey(locationKey: String): Int
     @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate))")
     fun getFutureWeatherMetric(startDate: LocalDateTime): LiveData<List<MetricFiveDaysForecastWeather>>
-    @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate)) and locationKey= :locationKey")
-    fun getFutureWeatherMetricByLocationKey(startDate: LocalDateTime, locationKey:String): LiveData<List<MetricFiveDaysForecastWeather>>
-    @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate)) and locationKey= :locationKey")
-    fun getFutureWeatherMetricByLocationKeyNonLive(startDate: LocalDateTime, locationKey:String): List<MetricFiveDaysForecastWeather>
+//    @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate)) and locationKey= :locationKey")
+//    fun getFutureWeatherMetricByLocationKey(startDate: LocalDateTime, locationKey:String): LiveData<List<MetricFiveDaysForecastWeather>>
+    @Query("select * from future_weather where locationKey= :locationKey")
+    fun getFutureWeatherMetricByLocationKey( locationKey:String): LiveData<List<MetricFiveDaysForecastWeather>>
+//    @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate)) and locationKey= :locationKey")
+//    fun getFutureWeatherMetricByLocationKeyNonLive(startDate: LocalDateTime, locationKey:String): List<MetricFiveDaysForecastWeather>
+    @Query("select * from future_weather where locationKey= :locationKey")
+    fun getFutureWeatherMetricByLocationKeyNonLive(locationKey:String): List<MetricFiveDaysForecastWeather>
     @Query("select * from future_weather where date(datetime(Date)) >= date(datetime(:startDate))")
     fun getFutureWeatherMetricNonLive(startDate: LocalDateTime): List<MetricFiveDaysForecastWeather>
     @Query("select count(id) from future_weather where date(datetime(Date)) >= date(datetime(:startDate))")

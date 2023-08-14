@@ -23,10 +23,14 @@ interface HourlyForecastDao {
     fun getHourlyForecastMetric(startDate: LocalDateTime): LiveData< List<Metric24hForecast>>
     @Query("select * from forecast24h_table where DateTime >= :startDate")
     fun getHourlyForecastMetricNonLive(startDate: LocalDateTime): List<Metric24hForecast>
-    @Query("select * from forecast24h_table where DateTime >= :startDate and locationKey= :locationKey")
-    fun getHourlyForecastMetricByLocationKey(startDate: LocalDateTime, locationKey:String): LiveData<List<Metric24hForecast>>
-    @Query("select * from forecast24h_table where DateTime >= :startDate and locationKey= :locationKey")
-    fun getHourlyForecastMetricByLocationKeyNonLive(startDate: LocalDateTime, locationKey:String): List<Metric24hForecast>
+//    @Query("select * from forecast24h_table where DateTime >= :startDate and locationKey= :locationKey")
+//    fun getHourlyForecastMetricByLocationKey(startDate: LocalDateTime, locationKey:String): LiveData<List<Metric24hForecast>>
+    @Query("select * from forecast24h_table where locationKey= :locationKey")
+    fun getHourlyForecastMetricByLocationKey( locationKey:String): LiveData<List<Metric24hForecast>>
+//    @Query("select * from forecast24h_table where DateTime >= :startDate and locationKey= :locationKey")
+//    fun getHourlyForecastMetricByLocationKeyNonLive(startDate: LocalDateTime, locationKey:String): List<Metric24hForecast>
+    @Query("select * from forecast24h_table where locationKey= :locationKey")
+    fun getHourlyForecastMetricByLocationKeyNonLive(locationKey:String): List<Metric24hForecast>
     @Query("select count(id) from forecast24h_table where DateTime >= :startDate")
     fun countHourlyForecast(startDate: LocalDateTime): Int
     @Query("delete from forecast24h_table where DateTime < :firstDateToKeep")

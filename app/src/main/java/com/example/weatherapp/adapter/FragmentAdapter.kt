@@ -34,5 +34,12 @@ class FragmentAdapter(fragmentActivity: FragmentActivity,private var locationNam
     fun getLocationNameAtPosition(position: Int): String {
         return locationNames[position].name
     }
-
+    fun getPositionForLocationKey(locationKey: String): Int {
+        for ((index, keyName) in locationNames.withIndex()) {
+            if (keyName.key == locationKey) {
+                return index
+            }
+        }
+        return -1
+    }
 }
