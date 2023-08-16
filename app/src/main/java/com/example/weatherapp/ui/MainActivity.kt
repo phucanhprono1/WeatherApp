@@ -131,12 +131,6 @@ class MainActivity : AppCompatActivity() {
 
         }
         fragmentAdapter = FragmentAdapter(this, keyNameList)
-//        binding.viewPager2Main.adapter = fragmentAdapter
-//        binding.viewPager2Main.setPageTransformer(pageTransformer)
-//        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-//        binding.circleIndicator.setViewPager(binding.viewPager2Main)
-//        // Optionally, restore the previous selected fragment's position
-//        binding.viewPager2Main.currentItem = currentVisibleFragmentPosition
     }
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization

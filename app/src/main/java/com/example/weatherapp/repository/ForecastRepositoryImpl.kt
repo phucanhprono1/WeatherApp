@@ -101,20 +101,16 @@ class ForecastRepositoryImpl @Inject constructor(
             futureWeatherDao.deleteOldEntriesByLocationKey(today, locationKey)
         }
         GlobalScope.launch(Dispatchers.IO) {
+            for (i in fetchedWeather.indices) {
+                if (!fetchedWeather[i].DailyForecasts.isNullOrEmpty()) {
+                    val timezone = fetchedWeather[i].DailyForecasts[0].timezone
+                    val locationKey = fetchedWeather[i].DailyForecasts[0].locationKey
+                    deleteOldForecastData(timezone!!, locationKey!!)
 
-            for (i in fetchedWeather.indices){
-                if (!fetchedWeather[i].DailyForecasts.isNullOrEmpty()){
-                    fetchedWeather[i].DailyForecasts[0].timezone?.let { fetchedWeather[i].DailyForecasts[0].locationKey?.let { it1 ->
-                        deleteOldForecastData(it,
-                            it1
-                        )
-                    } }
-                    if(futureWeatherDao.countEntriesForLocationKey(fetchedWeather[i].DailyForecasts[0].locationKey!!) <5 ){
+                    if (futureWeatherDao.countEntriesForLocationKey(locationKey) < 5) {
                         futureWeatherDao.insert(fetchedWeather[i].DailyForecasts)
                     }
-
                 }
-
             }
             Log.d("ForecastRepositoryImpl", "persistFetchedFutureWeather: $fetchedWeather")
         }
