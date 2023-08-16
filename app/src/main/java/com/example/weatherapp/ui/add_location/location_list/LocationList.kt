@@ -104,13 +104,13 @@ class LocationList : AppCompatActivity(), LocationRecyclerAdapter.OnLocationLong
         val locationList = locationRepo.getAllCity()
         locationAdapter.setLocationKeyResponseList(locationList)
     }
-    val activity: MainActivity = MainActivity()
+
     override fun onLocationClick(location: LocationKeyResponse) {
         Log.d("LocationList", "onLocationClick: ${location.EnglishName}")
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra("LOCATION_KEY", location.Key)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent)
-        activity.finish()
         finish()
     }
 }

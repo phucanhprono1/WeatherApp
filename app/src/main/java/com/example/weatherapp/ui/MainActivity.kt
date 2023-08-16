@@ -14,13 +14,12 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherapp.R
 import com.example.weatherapp.adapter.FragmentAdapter
-import com.example.weatherapp.adapter.ViewPager2Adapter
 import com.example.weatherapp.api.ServiceFactory
 import com.example.weatherapp.config.StaticConfig
 import com.example.weatherapp.databinding.ActivityMainBinding
@@ -31,14 +30,12 @@ import com.example.weatherapp.ui.fragment.currentweather.CurrentWeatherFragment
 import com.example.weatherapp.response.geolocation.LocationKeyResponse
 import com.example.weatherapp.room.LocationDao
 import com.example.weatherapp.transformer.Horizontal3DPageTransformer
-import com.example.weatherapp.transformer.LinearTemp3DPageTransformer
 import com.example.weatherapp.ui.add_location.location_list.LocationList
 
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.File
@@ -109,7 +106,9 @@ class MainActivity : AppCompatActivity() {
         }
         fragmentAdapter.updateDataList(keyNameList)
     }
-
+    private fun setCurrentItem(position: Int) {
+        binding.viewPager2Main.setCurrentItem(position, true)
+    }
     private fun refreshFragments() {
         // Refresh the fragments
         // Retrieve the location keys from SharedPreferences and locationRepository
@@ -132,60 +131,32 @@ class MainActivity : AppCompatActivity() {
 
         }
         fragmentAdapter = FragmentAdapter(this, keyNameList)
-        binding.viewPager2Main.adapter = fragmentAdapter
-        binding.viewPager2Main.setPageTransformer(pageTransformer)
-        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
-        binding.circleIndicator.setViewPager(binding.viewPager2Main)
-        // Optionally, restore the previous selected fragment's position
-        binding.viewPager2Main.currentItem = currentVisibleFragmentPosition
+//        binding.viewPager2Main.adapter = fragmentAdapter
+//        binding.viewPager2Main.setPageTransformer(pageTransformer)
+//        binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
+//        binding.circleIndicator.setViewPager(binding.viewPager2Main)
+//        // Optionally, restore the previous selected fragment's position
+//        binding.viewPager2Main.currentItem = currentVisibleFragmentPosition
     }
 
     // ViewPager2.OnPageChangeCallback for handling scroll synchronization
     private val viewPagerCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            if (currentVisibleFragmentPosition >= 0) {
-                val oldVisibleFragment =
-                    fragmentAdapter.getFragmentAtPosition(currentVisibleFragmentPosition)
-                if (oldVisibleFragment is CurrentWeatherFragment) {
-                    oldVisibleFragment.hideTemperatureLayout()
-                }
-            }
-
-            binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
-
-            val selectedFragment = fragmentAdapter.getFragmentAtPosition(position)
-            if (selectedFragment is CurrentWeatherFragment) {
-                selectedFragment.showTemperatureLayout()
-            }
-
-            // Update the currentVisibleFragmentPosition
             currentVisibleFragmentPosition = position
-            // Update the Toolbar title with the location name of the selected fragment
             binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(position)
-
         }
+
         override fun onPageScrolled(
             position: Int,
             positionOffset: Float,
             positionOffsetPixels: Int
         ) {
-
-            val totalScrollOffset = binding.viewPager2Main.width * position + positionOffsetPixels
-
+            val totalScrollOffset = position + positionOffset
             val fragment = fragmentAdapter.getFragmentAtPosition(position)
-
             if (fragment is CurrentWeatherFragment) {
                 fragment.setScrollPosition(totalScrollOffset)
-
-                currentFragment = fragment
-            } else {
-
-                currentFragment?.setScrollPosition(previousScrollPosition)
             }
-
-            // Store the scroll position for synchronization in the next scroll event
-            previousScrollPosition = totalScrollOffset
         }
     }
 
@@ -235,11 +206,9 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager2Main.adapter = fragmentAdapter
         val locationKey = intent.getStringExtra("LOCATION_KEY")
         if (!locationKey.isNullOrEmpty()) {
-            // Đã nhận được locationKey từ LocationList, thực hiện xử lý tương ứng
-            // Ví dụ: Hiển thị dữ liệu cho locationKey tại vị trí tương ứng trong ViewPager
             val viewPagerPosition = fragmentAdapter.getPositionForLocationKey(locationKey)
             if (viewPagerPosition != -1) {
-                binding.viewPager2Main.currentItem = viewPagerPosition
+                setCurrentItem(viewPagerPosition)
                 binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(viewPagerPosition)
             }
         }
@@ -322,7 +291,7 @@ class MainActivity : AppCompatActivity() {
             )
         } else {
             // Sử dụng Coroutine để gọi API và xử lý kết quả
-            GlobalScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val location = getLastKnownLocation()
                     if (location != null) {

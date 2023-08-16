@@ -20,10 +20,6 @@ import com.example.weatherapp.provider.NoConnectivityException
 import com.example.weatherapp.ui.Detail5DayActivity
 import com.example.weatherapp.ui.MainActivity
 import com.example.weatherapp.ui.fragment.ScopedFragment
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -206,8 +202,8 @@ class CurrentWeatherFragment : ScopedFragment() {
     }
 
     // Method to set the scroll position for the fragment's ScrollView
-    fun setScrollPosition(scrollX: Int) {
-        binding.scrollView.scrollTo(scrollX, 0)
+    fun setScrollPosition(scrollX: Float) {
+        binding.scrollView.scrollTo(scrollX.toInt(), 0)
     }
     private fun getRefresh(){
         lifecycleScope.launch {

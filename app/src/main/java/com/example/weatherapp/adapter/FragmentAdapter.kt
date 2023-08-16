@@ -20,6 +20,7 @@ class FragmentAdapter(fragmentActivity: FragmentActivity,private var locationNam
     override fun createFragment(position: Int): Fragment {
         return if (position >= 0 && position < locationNames.size) {
             val fragment = CurrentWeatherFragment.newInstance(locationNames[position].key)
+            fragmentList.add(fragment)
             fragment
         } else {
             Fragment()
