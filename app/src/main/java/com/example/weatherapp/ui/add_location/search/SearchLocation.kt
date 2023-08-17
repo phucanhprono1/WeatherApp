@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import java.time.ZonedDateTime
@@ -84,7 +85,8 @@ class SearchLocation : AppCompatActivity(), SearchResultAdapter.OnResultClickLis
             try {
                 locationRepo.insertNewCity(location)
                 val currentWeatherByKey = forecastRepository.getCurrentWeatherByLocationKey(location.Key, true)
-                val dailyWeatherByKey = forecastRepository.getFutureWeatherListByLocationKey(LocalDateTime.now(), location.Key, true)
+                val dailyWeatherByKey = forecastRepository.getFutureWeatherListByLocationKey(
+                    LocalDate.now(), location.Key, true)
                 val hourlyWeatherByKey = forecastRepository.getHourlyForecastListByLocationKey(LocalDateTime.now(), location.Key, true)
 
                 if (currentWeatherByKey != null && dailyWeatherByKey != null && hourlyWeatherByKey != null) {

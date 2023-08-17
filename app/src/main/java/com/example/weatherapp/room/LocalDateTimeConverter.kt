@@ -18,4 +18,7 @@ object LocalDateTimeConverter {
     @TypeConverter
     @JvmStatic
     fun zonedSDateTimeToString(dateTime: ZonedDateTime?) = dateTime?.format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
+    @TypeConverter
+    @JvmStatic
+    fun DateToString(dateTime: LocalDate?) = dateTime?.format(DateTimeFormatter.ISO_LOCAL_DATE)
 }

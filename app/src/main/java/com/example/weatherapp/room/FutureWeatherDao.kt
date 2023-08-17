@@ -34,7 +34,7 @@ interface FutureWeatherDao {
     fun countFutureWeather(startDate: LocalDateTime): Int
     @Query("delete from future_weather where date(datetime(Date)) < date(datetime(:firstDateToKeep))")
     fun deleteOldEntries(firstDateToKeep: LocalDateTime)
-    @Query("delete from future_weather where Date < :firstDateToKeep and locationKey= :locationKey")
-    fun deleteOldEntriesByLocationKey(firstDateToKeep: ZonedDateTime, locationKey:String)
+    @Query("delete from future_weather where locationKey = :locationKey")
+    fun deleteOldEntriesByLocationKey( locationKey: String)
 
 }

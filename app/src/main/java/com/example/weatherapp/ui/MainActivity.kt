@@ -105,6 +105,8 @@ class MainActivity : AppCompatActivity() {
 
         }
         fragmentAdapter.updateDataList(keyNameList)
+        //binding.viewPager2Main.setPageTransformer(pageTransformer)
+
     }
     private fun setCurrentItem(position: Int) {
         binding.viewPager2Main.setCurrentItem(position, true)
@@ -197,13 +199,15 @@ class MainActivity : AppCompatActivity() {
         }
         fragmentAdapter = FragmentAdapter(this, keyNameList)
         fragmentAdapter.updateDataList(keyNameList)
+        binding.viewPager2Main.offscreenPageLimit = 10
         binding.viewPager2Main.adapter = fragmentAdapter
         val locationKey = intent.getStringExtra("LOCATION_KEY")
         if (!locationKey.isNullOrEmpty()) {
             val viewPagerPosition = fragmentAdapter.getPositionForLocationKey(locationKey)
             if (viewPagerPosition != -1) {
-                setCurrentItem(viewPagerPosition)
+                binding.viewPager2Main.currentItem = viewPagerPosition
                 binding.titleTextView.text = fragmentAdapter.getLocationNameAtPosition(viewPagerPosition)
+                binding.viewPager2Main.registerOnPageChangeCallback(viewPagerCallback)
             }
         }
         binding.viewPager2Main.setPageTransformer(pageTransformer)

@@ -15,6 +15,7 @@ import com.example.weatherapp.weatherunit.currentweather.UnitLocalizedCurrentWea
 import com.example.weatherapp.weatherunit.forecast24h.UnitLocalized24hForecast
 import com.example.weatherapp.weatherunit.forecastweather.UnitLocalizedFiveDaysForecastWeather
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.threeten.bp.LocalDate
 
 import org.threeten.bp.LocalDateTime
 
@@ -44,7 +45,7 @@ class CurrentWeatherViewModel  @Inject constructor(
         forecastRepository.getCurrentWeatherByLocationKey(key,super.isMetricUnit)
     }
     val forecastWeatherByLocationKey by lazyDeferred {
-        forecastRepository.getFutureWeatherListByLocationKey(LocalDateTime.now(),key,super.isMetricUnit)
+        forecastRepository.getFutureWeatherListByLocationKey(LocalDate.now(),key,super.isMetricUnit)
     }
     val hourlyForecastByLocationKey by lazyDeferred {
         forecastRepository.getHourlyForecastListByLocationKey(LocalDateTime.now(),key,super.isMetricUnit)

@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -97,8 +98,8 @@ class ForecastRepositoryImpl @Inject constructor(
     }
     private fun persistFetchFutureWeather(fetchedWeather: List<FiveDaysForecast>) {
         fun deleteOldForecastData(timezone: String, locationKey: String) {
-            val today = ZonedDateTime.now(ZoneId.of(timezone))
-            futureWeatherDao.deleteOldEntriesByLocationKey(today, locationKey)
+            val today = ZonedDateTime.now(ZoneId.of(timezone))// Convert to LocalDate
+            futureWeatherDao.deleteOldEntriesByLocationKey( locationKey)
         }
         GlobalScope.launch(Dispatchers.IO) {
             for (i in fetchedWeather.indices) {
@@ -181,7 +182,7 @@ class ForecastRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFutureWeatherListByLocationKey(
-        startDate: LocalDateTime,
+        startDate: LocalDate,
         locationKey: String,
         metric: Boolean
     ): LiveData<out List<UnitLocalizedFiveDaysForecastWeather>> {
